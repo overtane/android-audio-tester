@@ -1,6 +1,6 @@
 package com.github.overtane.audiotester.audiotrack
 
-enum class Direction {
+enum class AudioDirection {
     PLAYBACK,
     RECORD,
     DUPLEX

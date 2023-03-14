@@ -1,6 +1,5 @@
 package com.github.overtane.audiotester.ui
 
-import android.provider.MediaStore.Audio
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -8,40 +7,30 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.overtane.audiotester.R
 import com.github.overtane.audiotester.TAG
-import com.github.overtane.audiotester.audiotrack.AudioSource
 import com.github.overtane.audiotester.audiotrack.AudioType
-import com.github.overtane.audiotester.audiotrack.PlaybackStream
-import com.github.overtane.audiotester.audiotrack.StreamDescriptor
-import kotlinx.coroutines.*
+import com.github.overtane.audiotester.audiotrack.AudioStream
+import com.github.overtane.audiotester.player.Player
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 
 class MainViewModel : ViewModel() {
 
-    private var stream : PlaybackStream? = null
-    private lateinit var player: Deferred<Unit>
+    private var player : Player? = null
+    private val stream =
+        AudioStream(AudioType.ENTERTAINMENT,10000, 48000, 2)
+
 
     fun onButtonClicked(v: View) {
         v.isSelected = !v.isSelected
         val b = v as Button
         Log.d(TAG, "${b.text} state is ${b.isSelected}")
-
         if (v.id == R.id.button_primary_audio_play_pause) {
             if (v.isSelected) {
-
-                stream = PlaybackStream(StreamDescriptor(AudioType.ENTERTAINMENT,60f, 48000, 2))
-                player = viewModelScope.async(Dispatchers.IO) { stream?.play(60) }
-                Log.d(TAG, "Playback started")
-                viewModelScope.launch(Dispatchers.IO) { waitPlayer() }
+                player = Player(stream)
+                viewModelScope.async(Dispatchers.IO) { player?.playAsync() }
             } else {
-                player.cancel()
-                stream?.stop()
+                player?.stop()
             }
         }
     }
-
-    suspend fun waitPlayer() = runBlocking {
-        player.join()
-        Log.d(TAG, "Playback stopped")
-        // TODO change button state!
-    }
-
 }
