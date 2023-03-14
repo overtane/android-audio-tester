@@ -1,4 +1,4 @@
-package net.vertanen.android.audiotester
+package com.github.overtane.audiotester
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4

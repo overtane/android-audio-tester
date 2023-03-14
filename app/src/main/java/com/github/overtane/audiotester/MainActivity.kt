@@ -1,8 +1,8 @@
-package net.vertanen.android.audiotester
+package com.github.overtane.audiotester
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import net.vertanen.android.audiotester.ui.main.MainFragment
+import com.github.overtane.audiotester.ui.MainFragment
 
 class MainActivity : AppCompatActivity() {
 

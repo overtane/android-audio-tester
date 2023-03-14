@@ -1,12 +1,13 @@
-package net.vertanen.android.audiotester.ui.main
+package com.github.overtane.audiotester.ui
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import net.vertanen.android.audiotester.R
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import com.github.overtane.audiotester.R
+import com.github.overtane.audiotester.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {
 
@@ -19,14 +20,15 @@ class MainFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
-        // TODO: Use the ViewModel
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_main, container, false)
+        val binding = FragmentMainBinding.inflate(inflater)
+        binding.viewModel = viewModel // bind ui-data to viewModel instance
+        return binding.root
     }
 
 }
