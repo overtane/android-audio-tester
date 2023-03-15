@@ -22,16 +22,19 @@ class Player(private val stream : AudioStream) {
         Log.d(TAG, "Audio format: $stream")
         Log.d(TAG, "Audio source: ${stream.source}")
         // Prime track with one buffer
-        val buf = stream.source.nextSamples(playback.bufferSizeInFrames)
+        val buf = stream.source.nextSamples(playback.bufferSizeInFrames * playback.channelCount)
         val written = playback.write(buf, 0, buf.size, AudioTrack.WRITE_BLOCKING)
         playback.play()
         Log.d(TAG, "Device id ${playback.routedDevice.id}")
+        Log.d(TAG, "Buffer size in samples ${playback.bufferSizeInFrames * playback.channelCount}")
         Log.d(TAG, "Performance mode ${playback.performanceMode}")
+        Log.d(TAG, "Channel configuration ${playback.channelConfiguration}, channel count ${playback.channelCount}")
+        Log.d(TAG, "Wrote $written samples: ${buf[0]}, ${buf[1]}, ${buf[2]}, ${buf[3]}")
         withTimeout(duration.toLong()) {
             while (isActive) {
-                val buf = stream.source.nextSamples(playback.bufferSizeInFrames)
+                val buf = stream.source.nextSamples(playback.bufferSizeInFrames  * playback.channelCount)
                 val written = playback.write(buf, 0, buf.size, AudioTrack.WRITE_BLOCKING)
-                //Log.d(TAG, "Wrote $written samples")
+                //Log.d(TAG, "Wrote $written samples: ${buf[0]}, ${buf[1]}, ${buf[2]}, ${buf[3]}")
             }
         }
     }

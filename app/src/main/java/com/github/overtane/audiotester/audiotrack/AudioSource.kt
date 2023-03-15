@@ -8,21 +8,26 @@ sealed class AudioSource(val durationMs: Int) {
 
     abstract fun nextSamples(size: Int): ShortArray
 
-    class SineWave(val frequencyHz: Int, private val sampleRate: Int, durationMs: Int) :
-        AudioSource(durationMs) {
+    class SineWave(
+        private val freqHz: Int,
+        private val sampleRate: Int,
+        private val channelCount: Int,
+        durationMs: Int
+    ) : AudioSource(durationMs) {
         private val amplitude = AMPLITUDE * Short.MAX_VALUE
-        private val angularFreq = 2 * PI * frequencyHz
-        private var n : Int = 0
+        private val angularFreq = 2 * PI * freqHz / sampleRate.toDouble()
+        private var start: Int = 0 // start phase
         override fun nextSamples(size: Int): ShortArray {
-            n = (n + size) % sampleRate
+            start = (start + size / channelCount) % sampleRate
             return ShortArray(size) { i ->
-                (amplitude * sin(angularFreq * (n + i) / sampleRate)).toInt().toShort()
+                (amplitude * sin(angularFreq * (start + i / channelCount))).toInt().toShort()
             }
         }
 
         override fun toString(): String {
-            return "Sine wave ${frequencyHz}Hz, ${durationMs/1000}s"
+            return "Sine wave ${freqHz}Hz, ${durationMs / 1000}s"
         }
+
         companion object {
             private const val AMPLITUDE = 1.0F
         }
@@ -34,7 +39,7 @@ sealed class AudioSource(val durationMs: Int) {
         }
 
         override fun toString(): String {
-            return "White noise ${durationMs/1000}s"
+            return "White noise ${durationMs / 1000}s"
         }
     }
 
@@ -42,7 +47,7 @@ sealed class AudioSource(val durationMs: Int) {
         override fun nextSamples(size: Int) = ShortArray(size) { 0 }
 
         override fun toString(): String {
-            return "Silence ${durationMs/1000}s"
+            return "Silence ${durationMs / 1000}s"
         }
     }
 

@@ -64,7 +64,7 @@ data class AudioStream(
                     .build()
             )
             .setBufferSizeInBytes(
-                AudioTrack.getMinBufferSize(sampleRate, channelCount, SAMPLE_FORMAT)
+                AudioTrack.getMinBufferSize(sampleRate, channelMask, SAMPLE_FORMAT)
             )
             .setPerformanceMode(PERFORMANCE_MODE)
             .setTransferMode(TRANSFER_MODE)
