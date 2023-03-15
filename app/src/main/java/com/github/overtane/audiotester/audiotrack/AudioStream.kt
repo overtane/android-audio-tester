@@ -81,7 +81,7 @@ data class AudioStream(
             "%.1f",
             sampleRate / 1000F
         )
-        return "$type ${sr}kHz, ${ch}, $direction"
+        return "$type $sr kHz, ${ch}, $direction"
     }
 
     companion object {

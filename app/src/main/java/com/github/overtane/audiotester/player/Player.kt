@@ -1,5 +1,6 @@
 package com.github.overtane.audiotester.player
 
+import android.media.AudioTimestamp
 import android.media.AudioTrack
 import android.util.Log
 import com.github.overtane.audiotester.TAG
@@ -21,9 +22,9 @@ class Player(private val stream : AudioStream) {
         val duration = stream.source.durationMs
         Log.d(TAG, "Audio format: $stream")
         Log.d(TAG, "Audio source: ${stream.source}")
-        // Prime track with one buffer
-        val buf = stream.source.nextSamples(playback.bufferSizeInFrames * playback.channelCount)
-        val written = playback.write(buf, 0, buf.size, AudioTrack.WRITE_BLOCKING)
+        // Prime track with one full buffer
+        var buf = stream.source.nextSamples(playback.bufferSizeInFrames * playback.channelCount)
+        var written = playback.write(buf, 0, buf.size, AudioTrack.WRITE_BLOCKING)
         playback.play()
         Log.d(TAG, "Device id ${playback.routedDevice.id}")
         Log.d(TAG, "Buffer size in samples ${playback.bufferSizeInFrames * playback.channelCount}")
@@ -31,10 +32,14 @@ class Player(private val stream : AudioStream) {
         Log.d(TAG, "Channel configuration ${playback.channelConfiguration}, channel count ${playback.channelCount}")
         Log.d(TAG, "Wrote $written samples: ${buf[0]}, ${buf[1]}, ${buf[2]}, ${buf[3]}")
         withTimeout(duration.toLong()) {
-            while (isActive) {
-                val buf = stream.source.nextSamples(playback.bufferSizeInFrames  * playback.channelCount)
-                val written = playback.write(buf, 0, buf.size, AudioTrack.WRITE_BLOCKING)
-                //Log.d(TAG, "Wrote $written samples: ${buf[0]}, ${buf[1]}, ${buf[2]}, ${buf[3]}")
+            while (isActive) { // is active until cancelled
+                buf = stream.source.nextSamples(playback.bufferSizeInFrames  * playback.channelCount)
+                written = playback.write(buf, 0, buf.size, AudioTrack.WRITE_BLOCKING)
+                Log.d(TAG, "Wrote $written samples: ${buf[0]}, ${buf[1]}, ${buf[2]}, ${buf[3]}")
+                var timestamp = AudioTimestamp()
+                if (playback.getTimestamp(timestamp)) {
+                    Log.d(TAG, "Timestamp ${timestamp.nanoTime}, ${timestamp.framePosition}")
+                }
             }
         }
     }

@@ -6,6 +6,8 @@ import kotlin.random.Random
 
 sealed class AudioSource(val durationMs: Int) {
 
+    val durationOut = String.format("%d", durationMs / 1000)
+
     abstract fun nextSamples(size: Int): ShortArray
 
     class SineWave(
@@ -25,7 +27,7 @@ sealed class AudioSource(val durationMs: Int) {
         }
 
         override fun toString(): String {
-            return "Sine wave ${freqHz}Hz, ${durationMs / 1000}s"
+            return "Sine wave $freqHz Hz, $durationOut s"
         }
 
         companion object {
@@ -39,7 +41,7 @@ sealed class AudioSource(val durationMs: Int) {
         }
 
         override fun toString(): String {
-            return "White noise ${durationMs / 1000}s"
+            return "White noise $durationOut s"
         }
     }
 
@@ -47,7 +49,7 @@ sealed class AudioSource(val durationMs: Int) {
         override fun nextSamples(size: Int) = ShortArray(size) { 0 }
 
         override fun toString(): String {
-            return "Silence ${durationMs / 1000}s"
+            return "Silence $durationOut s"
         }
     }
 

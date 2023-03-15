@@ -3,6 +3,7 @@ package com.github.overtane.audiotester.ui
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.overtane.audiotester.R
@@ -16,14 +17,23 @@ import kotlinx.coroutines.async
 
 class MainViewModel : ViewModel() {
 
-    private var main_player: Player? = null
-    private var alt_player: Player? = null
-    private val main_stream =
-        AudioStream(AudioType.ENTERTAINMENT, AudioSource.WhiteNoise(10000), 48000, 1)
-        //AudioStream(AudioType.ENTERTAINMENT, AudioSource.SineWave(400, 8000, 1, 10000), 8000, 1)
-    private val alt_stream =
-        //AudioStream(AudioType.ALTERNATE, AudioSource.WhiteNoise(10000), 48000, 1)
-        AudioStream(AudioType.ALTERNATE, AudioSource.SineWave(800, 48000, 2, 10000), 48000, 2)
+    private var _mainAudioStream = MutableLiveData<AudioStream>()
+    val mainAudioStream
+        get() = _mainAudioStream
+
+    private var _altAudioStream = MutableLiveData<AudioStream>()
+    val altAudioStream
+        get() = _altAudioStream
+
+    private var mainPlayer: Player? = null
+    private var altPlayer: Player? = null
+
+    init {
+        val mainAudioSource = AudioSource.WhiteNoise(10000)
+        _mainAudioStream.value = AudioStream(AudioType.ENTERTAINMENT, mainAudioSource, 48000, 1)
+        val altAudioSource = AudioSource.SineWave(800, 48000, 2, 10000)
+        _altAudioStream.value = AudioStream(AudioType.ALTERNATE, altAudioSource, 48000, 2)
+    }
 
     fun onButtonClicked(v: View) {
         v.isSelected = !v.isSelected
@@ -31,19 +41,27 @@ class MainViewModel : ViewModel() {
         Log.d(TAG, "${b.text} state is ${b.isSelected}")
         if (v.id == R.id.button_primary_audio_play_pause) {
             if (v.isSelected) {
-                main_player = Player(main_stream)
-                viewModelScope.async(Dispatchers.IO) { main_player?.playAsync() }
+                mainPlayer = Player(mainAudioStream.value!!)
+                viewModelScope.async(Dispatchers.IO) { mainPlayer?.playAsync() }
             } else {
-                main_player?.stop()
+                mainPlayer?.stop()
             }
         }
         if (v.id == R.id.button_secondary_audio_play_pause) {
             if (v.isSelected) {
-                alt_player = Player(alt_stream)
-                viewModelScope.async(Dispatchers.IO) { alt_player?.playAsync() }
+                altPlayer = Player(altAudioStream.value!!)
+                viewModelScope.async(Dispatchers.IO) { altPlayer?.playAsync() }
             } else {
-                alt_player?.stop()
+                altPlayer?.stop()
             }
         }
+    }
+
+    fun onMainAudioClicked() {
+        Log.d(TAG, "Main audio clicked")
+    }
+
+    fun onAltAudioClicked() {
+        Log.d(TAG, "Alt audio clicked")
     }
 }

@@ -10,7 +10,7 @@ enum class AudioType {
 
     override fun toString() : String = when (this) {
         ALERT -> "Alert"
-        ALTERNATE -> "Other"
+        ALTERNATE -> "Alt"
         DEFAULT -> "Default"
         ENTERTAINMENT -> "Media"
         SPEECH_RECOGNITION -> "Speech"
