@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.overtane.audiotester.R
 import com.github.overtane.audiotester.TAG
+import com.github.overtane.audiotester.audiotrack.AudioSource
 import com.github.overtane.audiotester.audiotrack.AudioType
 import com.github.overtane.audiotester.audiotrack.AudioStream
 import com.github.overtane.audiotester.player.Player
@@ -15,9 +16,9 @@ import kotlinx.coroutines.async
 
 class MainViewModel : ViewModel() {
 
-    private var player : Player? = null
+    private var player: Player? = null
     private val stream =
-        AudioStream(AudioType.ENTERTAINMENT,10000, 48000, 2)
+        AudioStream(AudioType.ENTERTAINMENT, AudioSource.SineWave(100, 44100, 10000), 44100, 2)
 
 
     fun onButtonClicked(v: View) {

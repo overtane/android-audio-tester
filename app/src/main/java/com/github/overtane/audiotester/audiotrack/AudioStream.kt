@@ -6,8 +6,7 @@ import android.media.AudioTrack
 
 data class AudioStream(
     val type: AudioType,
-    // TODO val source : AudioSource,
-    val duration: Int, // TODO move to source! milliseconds
+    val source: AudioSource,
     val sampleRate: Int,
     val channelCount: Int
 ) {
@@ -70,6 +69,20 @@ data class AudioStream(
             .setPerformanceMode(PERFORMANCE_MODE)
             .setTransferMode(TRANSFER_MODE)
             .build()
+
+    override fun toString(): String {
+        val ch = when (channelCount) {
+            1 -> "mono"
+            2 -> "stereo"
+            else -> "no ch"
+        }
+        val rem = sampleRate % 1000
+        val sr = if (rem == 0) (sampleRate / 1000).toString() else String.format(
+            "%.1f",
+            sampleRate / 1000F
+        )
+        return "$type ${sr}kHz, ${ch}, $direction"
+    }
 
     companion object {
         private const val SAMPLE_FORMAT = AudioFormat.ENCODING_PCM_16BIT

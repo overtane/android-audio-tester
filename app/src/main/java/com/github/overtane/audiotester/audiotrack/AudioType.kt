@@ -6,5 +6,14 @@ enum class AudioType {
     DEFAULT,
     ENTERTAINMENT,
     SPEECH_RECOGNITION,
-    TELEPHONY,
+    TELEPHONY;
+
+    override fun toString() : String = when (this) {
+        ALERT -> "Alert"
+        ALTERNATE -> "Other"
+        DEFAULT -> "Default"
+        ENTERTAINMENT -> "Media"
+        SPEECH_RECOGNITION -> "Speech"
+        TELEPHONY -> "Call"
+    }
 }

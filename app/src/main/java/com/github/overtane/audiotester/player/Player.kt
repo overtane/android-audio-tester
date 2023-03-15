@@ -5,7 +5,6 @@ import android.util.Log
 import com.github.overtane.audiotester.TAG
 import com.github.overtane.audiotester.audiotrack.AudioStream
 import kotlinx.coroutines.*
-import kotlin.random.Random
 
 class Player(private val stream : AudioStream) {
 
@@ -19,27 +18,25 @@ class Player(private val stream : AudioStream) {
     }
 
     private suspend fun play() {
-        Log.d(TAG, "Starting audio track for ${stream.duration/1000} seconds")
+        val duration = stream.source.durationMs
+        Log.d(TAG, "Audio format: $stream")
+        Log.d(TAG, "Audio source: ${stream.source}")
         // Prime track with one buffer
-        // TODO AudioSource.start(buf.size)
-        val buf = ShortArray(playback.bufferSizeInFrames)
-            { Random.nextInt(-Short.MAX_VALUE.toInt(), Short.MAX_VALUE.toInt()).toShort() }
+        val buf = stream.source.nextSamples(playback.bufferSizeInFrames)
         val written = playback.write(buf, 0, buf.size, AudioTrack.WRITE_BLOCKING)
         playback.play()
         Log.d(TAG, "Device id ${playback.routedDevice.id}")
         Log.d(TAG, "Performance mode ${playback.performanceMode}")
-        withTimeout(stream.duration.toLong()) {
+        withTimeout(duration.toLong()) {
             while (isActive) {
-                // TODO AudioSource.next(buf.size)
-                val buf = ShortArray(playback.bufferSizeInFrames)
-                    { Random.nextInt(-Short.MAX_VALUE.toInt(), Short.MAX_VALUE.toInt()).toShort() }
+                val buf = stream.source.nextSamples(playback.bufferSizeInFrames)
                 val written = playback.write(buf, 0, buf.size, AudioTrack.WRITE_BLOCKING)
                 //Log.d(TAG, "Wrote $written samples")
             }
         }
     }
 
-    suspend fun waitPlayerFinished() = runBlocking {
+    private suspend fun waitPlayerFinished() = runBlocking {
         player.join()
         Log.d(TAG, "Playback stopped")
         playback.stop()
