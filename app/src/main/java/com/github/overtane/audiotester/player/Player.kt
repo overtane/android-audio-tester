@@ -16,7 +16,7 @@ class Player(private val stream: AudioStream) {
     private lateinit var player: Deferred<Unit>
 
     private var status =
-        StreamInfo(stream.sampleRate * stream.source.durationMs / 1000, playback.bufferSizeInFrames)
+        StreamInfo(stream.sampleRate, stream.source.durationMs, playback.bufferSizeInFrames)
 
     init {
         Log.d(TAG, "Audio format: $stream")
@@ -62,12 +62,8 @@ class Player(private val stream: AudioStream) {
                 // TODO mutual exclusion
                 status.framesStreamed += written / playback.channelCount
                 status.underruns = playback.underrunCount
+                status.latencyMs = latencyMs()
                 //Log.d(TAG, "Wrote $written samples: ${buf[0]}, ${buf[1]}, ${buf[2]}, ${buf[3]}")
-                //var timestamp = AudioTimestamp()
-                // TODO calculate latency
-                //if (playback.getTimestamp(timestamp)) {
-                //    Log.d(TAG, "Timestamp ${timestamp.nanoTime}, ${timestamp.framePosition}")
-                //}
             }
             Log.d(TAG, "Playback loop exited")
         }
@@ -78,7 +74,40 @@ class Player(private val stream: AudioStream) {
         player.cancel()
     }
 
+    /**
+     * Calculate the current latency between writing a frame to the output stream and
+     * the same frame being presented to the audio hardware.
+     *
+     * Here's how the calculation works:
+     *
+     * 1) Get the time a particular frame was presented to the audio hardware
+     * @see AudioStream::getTimestamp
+     * 2) From this extrapolate the time which the *next* audio frame written to the stream
+     * will be presented
+     * 3) Assume that the next audio frame is written at the current time
+     * 4) currentLatency = nextFramePresentationTime - nextFrameWriteTime
+     *
+     */
+    private fun latencyMs() : Int {
+        var timestamp = AudioTimestamp()
+        if (!playback.getTimestamp(timestamp)) {
+            return 0
+        }
+        // Log.d(TAG, "Timestamp ${timestamp.nanoTime}, ${timestamp.framePosition}")
+        val nowNs = System.nanoTime()
+        val frameDelta = status.framesStreamed - timestamp.framePosition
+        val frameDeltaNs = (frameDelta * NANOS_PER_SECOND) / playback.sampleRate
+        val frameHwTimeNs = timestamp.nanoTime + frameDeltaNs
+        val latencyMs = (frameHwTimeNs - nowNs) / NANOS_PER_MILLIS
+        Log.d(TAG,"Calculated latency $latencyMs")
+        return latencyMs.toInt()
+    }
+
+
+
     companion object {
         private const val EMIT_FREQ_HZ = 5
+        private const val NANOS_PER_SECOND = 1000000000
+        private const val NANOS_PER_MILLIS = 1000000
     }
 }
