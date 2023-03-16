@@ -31,7 +31,7 @@ sealed class AudioSource(val durationMs: Int) {
         }
 
         companion object {
-            private const val AMPLITUDE = 1.0F
+            private const val AMPLITUDE = 1.0
         }
     }
 

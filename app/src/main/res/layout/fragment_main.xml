@@ -10,23 +10,23 @@
             type="com.github.overtane.audiotester.ui.MainViewModel" />
     </data>
 
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".ui.main.MainFragment">
 
-        <ScrollView
-            android:id="@+id/primary_audio_player"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/primary_audio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/divider_primary_secondary">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:id="@+id/primary_data"
@@ -38,45 +38,33 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:id="@+id/primary_audio_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Primary Audio"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/primary_audio_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Primary Audio"
+                        android:textSize="24sp"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/primary_audio_source_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Audio Source"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/primary_audio_source_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Audio Source"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/primary_audio_format"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{viewModel.mainAudioStream.toString()}"  />
+                    <TextView
+                        android:id="@+id/primary_audio_format"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.audioStream[0].toString()}"  />
 
-                <TextView
-                    android:id="@+id/primary_audio_source"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{viewModel.mainAudioStream.source.toString()}"  />
+                    <TextView
+                        android:id="@+id/primary_audio_source"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.audioStream[0].source.toString()}"  />
 
-                <TextView
-                    android:id="@+id/primary_stream_info_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Stream info"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/primary_stream_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -132,6 +120,14 @@
 
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/primary_stream_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.audioInfoMain.toString()}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/primary_buttons" />
+
                 <ProgressBar
                     android:id="@+id/progressBar"
                     style="?android:attr/progressBarStyleHorizontal"
@@ -139,10 +135,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/primary_buttons" />
+                    app:layout_constraintTop_toBottomOf="@+id/primary_stream_info" />
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <View
             android:id="@+id/divider_primary_secondary"
@@ -154,19 +149,15 @@
             android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/secondary_audio_player" />
+            app:layout_constraintBottom_toTopOf="@+id/secondary_audio" />
 
-        <ScrollView
-            android:id="@+id/secondary_audio_player"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/secondary_audio"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintBottom_toBottomOf="parent">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
 
                 <LinearLayout
                     android:id="@+id/secondary_data"
@@ -178,47 +169,35 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                <TextView
-                    android:id="@+id/secondary_audio_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Secondary Audio"
-                    android:textSize="24sp"
-                    android:textStyle="bold"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    <TextView
+                        android:id="@+id/secondary_audio_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Secondary Audio"
+                        android:textSize="24sp"
+                        android:textStyle="bold"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
 
-                <TextView
-                    android:id="@+id/secondary_audio_source_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="Audio source"
-                    android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/secondary_audio_source_title"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Audio source"
+                        android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/secondary_audio_format"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{viewModel.altAudioStream.toString()}"  />
+                    <TextView
+                        android:id="@+id/secondary_audio_format"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.audioStream[1].toString()}"  />
 
-                <TextView
-                    android:id="@+id/secondary_audio_source"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@{viewModel.altAudioStream.source.toString()}"  />
+                    <TextView
+                        android:id="@+id/secondary_audio_source"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@{viewModel.audioStream[1].source.toString()}"  />
 
-                <TextView
-                    android:id="@+id/secondary_stream_info_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Stream info"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/secondary_stream_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -263,18 +242,27 @@
                         android:text="Play" />
                 </LinearLayout>
 
-                <ProgressBar
-                    android:id="@+id/progressBarSecondaryAudio"
-                    style="?android:attr/progressBarStyleHorizontal"
+                <TextView
+                    android:id="@+id/secondary_stream_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:text="@{viewModel.audioInfoAlt.toString()}"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/secondary_buttons" />
+                    app:layout_constraintTop_toBottomOf="@id/secondary_buttons"  />
+
+                <ProgressBar
+                        android:id="@+id/progressBarSecondaryAudio"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/secondary_stream_info" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
-        </ScrollView>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
 
 </layout>

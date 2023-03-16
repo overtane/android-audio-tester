@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.github.overtane.audiotester.R
 import com.github.overtane.audiotester.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {
@@ -19,7 +18,7 @@ class MainFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
     }
 
     override fun onCreateView(
@@ -27,6 +26,7 @@ class MainFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val binding = FragmentMainBinding.inflate(inflater)
+        binding.lifecycleOwner = viewLifecycleOwner
         binding.viewModel = viewModel // bind ui-data to viewModel instance
         return binding.root
     }
