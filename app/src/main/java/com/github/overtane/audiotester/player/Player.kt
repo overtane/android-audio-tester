@@ -61,6 +61,7 @@ class Player(private val stream: AudioStream) {
                 written = playback.write(buf, 0, buf.size, AudioTrack.WRITE_BLOCKING)
                 // TODO mutual exclusion
                 status.framesStreamed += written / playback.channelCount
+                status.underruns = playback.underrunCount
                 //Log.d(TAG, "Wrote $written samples: ${buf[0]}, ${buf[1]}, ${buf[2]}, ${buf[3]}")
                 //var timestamp = AudioTimestamp()
                 // TODO calculate latency

@@ -5,7 +5,9 @@ enum class AudioDirection {
     RECORD,
     DUPLEX;
 
-    override fun toString(): String {
-        return super.toString().lowercase()
+    override fun toString(): String = when (this) {
+            PLAYBACK -> "playback"
+            RECORD -> "record"
+            DUPLEX -> "playback & record"
     }
 }

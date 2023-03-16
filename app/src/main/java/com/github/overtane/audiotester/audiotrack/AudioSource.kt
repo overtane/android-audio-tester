@@ -27,7 +27,7 @@ sealed class AudioSource(val durationMs: Int) {
         }
 
         override fun toString(): String {
-            return "Sine wave $freqHz Hz, $durationOut s"
+            return "Sine wave $freqHz Hz $durationOut s"
         }
 
         companion object {

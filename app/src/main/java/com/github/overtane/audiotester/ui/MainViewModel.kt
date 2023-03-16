@@ -33,7 +33,7 @@ class MainViewModel : ViewModel() {
     private var player: MutableList<Player?> = mutableListOf(null, null)
 
     init {
-        _audioStream.value = mutableListOf(DEFAULT_MAIN_STREAM, DEFAULT_ALT_STREAM)
+        _audioStream.value = mutableListOf(INIT_MAIN_STREAM, INIT_ALT_STREAM)
     }
 
     fun onButtonClicked(view: View) {
@@ -56,14 +56,15 @@ class MainViewModel : ViewModel() {
         player[i] = Player(audioStream.value?.get(i)!!)
         viewModelScope.async(Dispatchers.IO) { player[i]?.play() }
         viewModelScope.launch {
-            player[i]?.status()?.collect { it ->
-                when (i) {
-                    MAIN_AUDIO -> _audioInfoMain.value = it
-                    ALT_AUDIO -> _audioInfoAlt.value = it
-                }
-            }
+            player[i]?.status()?.collect { it -> updateInfo(i, it) }
             view.isSelected = false
         }
+    }
+
+    private fun updateInfo(i: Int, info: StreamInfo) = when (i) {
+        MAIN_AUDIO -> _audioInfoMain.value = info
+        ALT_AUDIO -> _audioInfoAlt.value = info
+        else -> Unit
     }
 
     private fun onButtonDeselected(view: View) {
@@ -86,33 +87,34 @@ class MainViewModel : ViewModel() {
         private const val MAIN_AUDIO = 0
         private const val ALT_AUDIO = 1
 
-        private const val DEFAULT_DURATION_MS = 10000
-        private const val DEFAULT_SAMPLE_RATE = 48000
-        private const val DEFAULT_MAIN_CHANNEL_COUNT = 1
-        private const val DEFAULT_ALT_CHANNEL_COUNT = 2
+        private const val INIT_DURATION_MS = 10000
+        private const val INIT_MAIN_SAMPLE_RATE = 8000
+        private const val INIT_ALT_SAMPLE_RATE = 48000
+        private const val INIT_MAIN_CHANNEL_COUNT = 1
+        private const val INIT_ALT_CHANNEL_COUNT = 2
 
-        private val DEFAULT_MAIN_SOURCE = AudioSource.WhiteNoise(DEFAULT_DURATION_MS)
-        private val DEFAULT_ALT_SOURCE =
+        private val INIT_MAIN_SOURCE = AudioSource.WhiteNoise(INIT_DURATION_MS)
+        private val INIT_ALT_SOURCE =
             AudioSource.SineWave(
                 800,
-                DEFAULT_SAMPLE_RATE,
-                DEFAULT_ALT_CHANNEL_COUNT,
-                DEFAULT_DURATION_MS
+                INIT_ALT_SAMPLE_RATE,
+                INIT_ALT_CHANNEL_COUNT,
+                INIT_DURATION_MS
             )
 
-        private val DEFAULT_MAIN_STREAM =
+        private val INIT_MAIN_STREAM =
             AudioStream(
                 AudioType.ENTERTAINMENT,
-                DEFAULT_MAIN_SOURCE,
-                DEFAULT_SAMPLE_RATE,
-                DEFAULT_MAIN_CHANNEL_COUNT
+                INIT_MAIN_SOURCE,
+                INIT_MAIN_SAMPLE_RATE,
+                INIT_MAIN_CHANNEL_COUNT
             )
-        private val DEFAULT_ALT_STREAM =
+        private val INIT_ALT_STREAM =
             AudioStream(
                 AudioType.ALTERNATE,
-                DEFAULT_ALT_SOURCE,
-                DEFAULT_SAMPLE_RATE,
-                DEFAULT_ALT_CHANNEL_COUNT
+                INIT_ALT_SOURCE,
+                INIT_ALT_SAMPLE_RATE,
+                INIT_ALT_CHANNEL_COUNT
             )
     }
 }

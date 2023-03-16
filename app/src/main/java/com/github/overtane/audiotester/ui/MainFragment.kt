@@ -10,10 +10,6 @@ import com.github.overtane.audiotester.databinding.FragmentMainBinding
 
 class MainFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = MainFragment()
-    }
-
     private lateinit var viewModel: MainViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -31,4 +27,7 @@ class MainFragment : Fragment() {
         return binding.root
     }
 
+    companion object {
+        fun newInstance() = MainFragment()
+    }
 }
