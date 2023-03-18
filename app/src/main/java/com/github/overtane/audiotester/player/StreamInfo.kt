@@ -12,7 +12,7 @@ data class StreamInfo(val sampleRate : Int, val durationMs : Int, var bufferSize
 
     override fun toString(): String {
         val bufferSizeInMs : Int = bufferSizeInFrames / (sampleRate / 1000)
-        return "Device $deviceId, Fast track ${fastTrack()}, Buffer size $bufferSizeInFrames ($bufferSizeInMs ms)\n" +
+        return "Device $deviceId, Fast track ${fastTrack()}, Buffer size $bufferSizeInFrames ($bufferSizeInMs ms), " +
                 "Underruns $underruns, Latency $latencyMs ms"
     }
 

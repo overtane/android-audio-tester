@@ -17,7 +17,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/main_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         tools:context=".ui.main.MainFragment">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -75,60 +75,84 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/primary_data">
 
-                    <Button
-                        android:id="@+id/button_primary_audio_duck"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/button_background_color"
-                        android:textColor="@color/button_text_color"
-                        android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
-                        android:text="Duck" />
-
-                    <Button
-                        android:id="@+id/button_primary_audio_repeat"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/button_background_color"
-                        android:textColor="@color/button_text_color"
-                        android:text="Rep"
-                        android:onClick="@{(view) -> viewModel.onButtonClicked(view)}" />
-
-                    <Button
+                    <ImageButton
                         android:id="@+id/button_primary_audio_play_pause"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:layout_margin="8dp"
                         android:layout_weight="1"
-                        android:backgroundTint="@color/button_background_color"
-                        android:textColor="@color/button_text_color"
+                        android:backgroundTint="@color/selector_button_background_color"
                         android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
-                        android:text="Play" />
+                        android:contentDescription="Start and stop main audio playback"
+                        app:srcCompat="@drawable/selector_ic_vector_play"
+                        app:tint="@color/selector_button_foreground_color"/>
 
-                    <Button
-                        android:id="@+id/button_primary_audio_recording"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                    <ImageButton
+                        android:id="@+id/button_primary_audio_duck"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:layout_margin="8dp"
-                        android:backgroundTint="@color/button_background_color"
-                        android:textColor="@color/button_text_color"
                         android:layout_weight="1"
-                        android:text="Rec" />
+                        android:backgroundTint="@color/selector_button_background_color"
+                        android:textColor="@color/selector_button_foreground_color"
+                        android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
+                        android:contentDescription="Duck main audio"
+                        app:srcCompat="@drawable/ic_vector_duck"
+                        app:tint="@color/selector_button_foreground_color" />
+
+                    <ImageButton
+                        android:id="@+id/button_primary_audio_repeat"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="8dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/selector_button_background_color"
+                        android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
+                        app:srcCompat="@drawable/ic_vector_repeat"
+                        app:tint="@color/selector_button_foreground_color" />
+
+                    <ImageButton
+                        android:id="@+id/button_primary_audio_recording"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="8dp"
+                        android:layout_weight="1"
+                        android:clickable="false"
+                        android:enabled="false"
+                        android:backgroundTint="?attr/colorOnPrimary"
+                        app:microphoneState="@{viewModel.audioStream[0]}"
+                        app:srcCompat="@drawable/selector_ic_vector_mic"
+                        app:tint="@color/selector_button_background_color" />
 
                 </LinearLayout>
 
-                <TextView
+                <LinearLayout
                     android:id="@+id/primary_stream_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.audioInfoMain.toString()}"
+                    android:orientation="horizontal"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/primary_buttons" />
+                    app:layout_constraintTop_toBottomOf="@+id/primary_buttons">
 
-                <ProgressBar
+                    <TextView
+                        android:id="@+id/primary_stream_info_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@{viewModel.audioInfoMain.toString()}" />
+
+                    <ImageView
+                        android:id="@+id/primary_stream_info_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="5"
+                        android:visibility="invisible"
+                        app:srcCompat="@drawable/ic_vector_error"
+                        app:tint="?attr/colorError"/>
+
+                </LinearLayout>
+
+            <ProgressBar
                     android:id="@+id/progressBar"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="match_parent"
@@ -209,47 +233,75 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/secondary_data" >
 
-                    <Button
-                        android:id="@+id/button_secondary_audio_duck"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/button_background_color"
-                        android:textColor="@color/button_text_color"
-                        android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
-                        android:text="Duck" />
 
-                    <Button
-                        android:id="@+id/button_secondary_audio_repeat"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/button_background_color"
-                        android:textColor="@color/button_text_color"
-                        android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
-                        android:text="Repeat" />
-
-                    <Button
+                    <ImageButton
                         android:id="@+id/button_secondary_audio_play_pause"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
                         android:layout_margin="8dp"
                         android:layout_weight="1"
-                        android:backgroundTint="@color/button_background_color"
-                        android:textColor="@color/button_text_color"
+                        android:backgroundTint="@color/selector_button_background_color"
                         android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
-                        android:text="Play" />
+                        app:srcCompat="@drawable/selector_ic_vector_play"
+                        app:tint="@color/selector_button_foreground_color" />
+
+                    <ImageButton
+                        android:id="@+id/button_secondary_audio_duck"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="8dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/selector_button_background_color"
+                        android:textColor="@color/selector_button_foreground_color"
+                        android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
+                        app:srcCompat="@drawable/ic_vector_duck"
+                        app:tint="@color/selector_button_foreground_color" />
+
+                    <ImageButton
+                        android:id="@+id/button_secondary_audio_repeat"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="8dp"
+                        android:layout_weight="1"
+                        android:backgroundTint="@color/selector_button_background_color"
+                        android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
+                        app:srcCompat="@drawable/ic_vector_repeat"
+                        app:tint="@color/selector_button_foreground_color" />
+
+                    <Button
+                        android:id="@+id/button_secondary_fill"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_margin="8dp"
+                        android:layout_weight="1"
+                        android:visibility="invisible"/>
+
                 </LinearLayout>
 
-                <TextView
+                <LinearLayout
                     android:id="@+id/secondary_stream_info"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@{viewModel.audioInfoAlt.toString()}"
+                    android:orientation="horizontal"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/secondary_buttons"  />
+                    app:layout_constraintTop_toBottomOf="@id/secondary_buttons">
+
+                    <TextView
+                        android:id="@+id/secondary_stream_info_text"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@{viewModel.audioInfoAlt.toString()}" />
+
+                    <ImageView
+                        android:id="@+id/secondary_stream_info_error"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_weight="5"
+                        android:visibility="invisible"
+                        app:srcCompat="@drawable/ic_vector_error"
+                        app:tint="?attr/colorError"/>
+                </LinearLayout>
 
                 <ProgressBar
                         android:id="@+id/progressBarSecondaryAudio"

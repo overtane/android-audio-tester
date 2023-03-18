@@ -15,10 +15,10 @@ data class AudioStream(
         get() = when (type) {
             AudioType.ALERT -> AudioDirection.PLAYBACK
             AudioType.ALTERNATE -> AudioDirection.PLAYBACK
-            AudioType.DEFAULT -> AudioDirection.DUPLEX
+            AudioType.DEFAULT -> AudioDirection.FULL_DUPLEX
             AudioType.ENTERTAINMENT -> AudioDirection.PLAYBACK
-            AudioType.SPEECH_RECOGNITION -> AudioDirection.DUPLEX
-            AudioType.TELEPHONY -> AudioDirection.DUPLEX
+            AudioType.SPEECH_RECOGNITION -> AudioDirection.FULL_DUPLEX
+            AudioType.TELEPHONY -> AudioDirection.FULL_DUPLEX
         }
 
     private val channelMask: Int

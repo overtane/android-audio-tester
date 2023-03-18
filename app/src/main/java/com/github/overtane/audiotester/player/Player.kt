@@ -45,7 +45,7 @@ class Player(private val stream: AudioStream) {
         // Prime track with one full buffer
         var buf = stream.source.nextSamples(playback.bufferSizeInFrames * playback.channelCount)
         var written = playback.write(buf, 0, buf.size, AudioTrack.WRITE_BLOCKING)
-        status.framesStreamed += written
+        status.framesStreamed += written / playback.channelCount
         playback.play()
         status.deviceId = playback.routedDevice.id
         status.performanceMode = playback.performanceMode
@@ -59,6 +59,10 @@ class Player(private val stream: AudioStream) {
             while (isActive) { // is active until cancelled
                 buf = stream.source.nextSamples(playback.bufferSizeInFrames * playback.channelCount)
                 written = playback.write(buf, 0, buf.size, AudioTrack.WRITE_BLOCKING)
+                // calculate latency for the first sample we just wrote
+                // Note: we should know quite exactly when the first sample was written.
+                // Here it is assumed that next frame will be written 'a short while' after latency
+                // has been calculated (i.e. on next round)
                 // TODO mutual exclusion
                 status.framesStreamed += written / playback.channelCount
                 status.underruns = playback.underrunCount
@@ -93,17 +97,15 @@ class Player(private val stream: AudioStream) {
         if (!playback.getTimestamp(timestamp)) {
             return 0
         }
+        val writeTimeNs = System.nanoTime() // approximate time when first sample is written
         // Log.d(TAG, "Timestamp ${timestamp.nanoTime}, ${timestamp.framePosition}")
-        val nowNs = System.nanoTime()
         val frameDelta = status.framesStreamed - timestamp.framePosition
         val frameDeltaNs = (frameDelta * NANOS_PER_SECOND) / playback.sampleRate
         val frameHwTimeNs = timestamp.nanoTime + frameDeltaNs
-        val latencyMs = (frameHwTimeNs - nowNs) / NANOS_PER_MILLIS
+        val latencyMs = (frameHwTimeNs - writeTimeNs) / NANOS_PER_MILLIS
         Log.d(TAG,"Calculated latency $latencyMs")
         return latencyMs.toInt()
     }
-
-
 
     companion object {
         private const val EMIT_FREQ_HZ = 5

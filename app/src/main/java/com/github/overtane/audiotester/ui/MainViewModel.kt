@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.github.overtane.audiotester.R
 import com.github.overtane.audiotester.TAG
+import com.github.overtane.audiotester.audiotrack.AudioDirection
 import com.github.overtane.audiotester.audiotrack.AudioSource
 import com.github.overtane.audiotester.audiotrack.AudioStream
 import com.github.overtane.audiotester.audiotrack.AudioType
@@ -46,7 +47,12 @@ class MainViewModel : ViewModel() {
 
     private fun onButtonSelected(view: View) {
         when (view.id) {
-            R.id.button_primary_audio_play_pause -> startAudio(view, MAIN_AUDIO)
+            R.id.button_primary_audio_play_pause -> {
+                if (audioStream.value?.get(MAIN_AUDIO)?.direction != AudioDirection.PLAYBACK) {
+
+                }
+                startAudio(view, MAIN_AUDIO)
+            }
             R.id.button_secondary_audio_play_pause -> startAudio(view, ALT_AUDIO)
             else -> Unit
         }
@@ -90,8 +96,8 @@ class MainViewModel : ViewModel() {
         private const val INIT_DURATION_MS = 10000
         private const val INIT_MAIN_SAMPLE_RATE = 8000
         private const val INIT_ALT_SAMPLE_RATE = 48000
-        private const val INIT_MAIN_CHANNEL_COUNT = 1
-        private const val INIT_ALT_CHANNEL_COUNT = 2
+        private const val INIT_MAIN_CHANNEL_COUNT = 2
+        private const val INIT_ALT_CHANNEL_COUNT = 1
 
         private val INIT_MAIN_SOURCE = AudioSource.WhiteNoise(INIT_DURATION_MS)
         private val INIT_ALT_SOURCE =
