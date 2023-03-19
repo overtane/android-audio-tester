@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <integer name="audio_duration_min">1</integer>
+    <integer name="audio_duration_max">60</integer>
+    <integer name="sine_freq_min">200</integer>
+    <integer name="sine_freq_max">4000</integer>
+</resources>

@@ -5,35 +5,53 @@ import android.view.*
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import com.github.overtane.audiotester.R
+import com.github.overtane.audiotester.audiotrack.AudioStream
+import com.github.overtane.audiotester.audiotrack.AudioType
+import com.github.overtane.audiotester.databinding.FragmentMainAudioSettingsBinding
 import com.github.overtane.audiotester.databinding.FragmentMainBinding
 
 class MainFragment : Fragment(), MenuProvider {
 
-    private lateinit var viewModel: MainViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
-    }
+    private val viewModel: MainViewModel by activityViewModels()
+    private lateinit var binding: FragmentMainBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentMainBinding.inflate(inflater)
+        binding = FragmentMainBinding.inflate(inflater)
         binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel // bind ui-data to viewModel instance
+        // bind ui-data to viewModel instance (left: xml-data, right: viewModel object)
+        binding.viewModel = viewModel
 
         (requireActivity() as MenuHost).addMenuProvider(
             this,
             viewLifecycleOwner,
             Lifecycle.State.RESUMED
         )
-
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Use fragment result listeners to get user input from settings fragment
+        setFragmentResultListener(MAIN_REQUEST_KEY) { key, bundle ->
+            val result = bundle.getParcelable<AudioStream>(AUDIO_STREAM_BUNDLE_KEY)
+            result?.let {
+                viewModel.setMainAudio(it)
+            }
+        }
+        setFragmentResultListener(ALT_REQUEST_KEY) { key, bundle ->
+            val result = bundle.getParcelable<AudioStream>(AUDIO_STREAM_BUNDLE_KEY)
+            result?.let {
+                viewModel.setAltAudio(it)
+            }
+        }
     }
 
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
@@ -51,6 +69,8 @@ class MainFragment : Fragment(), MenuProvider {
     }
 
     companion object {
-        fun newInstance() = MainFragment()
+        const val MAIN_REQUEST_KEY = "MainAudioSettings"
+        const val ALT_REQUEST_KEY = "AltAudioSettings"
+        const val AUDIO_STREAM_BUNDLE_KEY = "AudioStream"
     }
 }

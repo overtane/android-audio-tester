@@ -11,5 +11,27 @@
         android:name="com.github.overtane.audiotester.ui.MainFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainAudioSettings"
+            app:destination="@id/mainAudioSettingsFragment" />
+        <action
+            android:id="@+id/action_altAudioSettings"
+            app:destination="@id/altAudioSettingsFragment" />
     </fragment>
+
+    <fragment
+        android:id="@+id/mainAudioSettingsFragment"
+        android:name="com.github.overtane.audiotester.ui.MainAudioSettingsFragment"
+        android:label="Main Audio Settings"
+        tools:layout="@layout/fragment_main_audio_settings">
+        <argument
+            android:name="audioStream"
+            app:argType="com.github.overtane.audiotester.audiotrack.AudioStream"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/altAudioSettingsFragment"
+        android:name="com.github.overtane.audiotester.ui.AltAudioSettingsFragment"
+        android:label="Alternate Audio Settings"
+        tools:layout="@layout/fragment_alt_audio_settings" />
 </navigation>

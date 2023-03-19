@@ -1,24 +1,36 @@
 package com.github.overtane.audiotester.audiotrack
 
+
+import android.os.Parcelable
+import kotlinx.parcelize.IgnoredOnParcel
+import kotlinx.parcelize.Parcelize
 import kotlin.math.PI
 import kotlin.math.sin
 import kotlin.random.Random
 
-sealed class AudioSource(val durationMs: Int) {
-
-    val durationOut = String.format("%d", durationMs / 1000)
+sealed class AudioSource(open val durationMs: Int) : Parcelable {
 
     abstract fun nextSamples(size: Int): ShortArray
 
+    @Parcelize
+    object Nothing : AudioSource(0) {
+        override fun nextSamples(size: Int) = shortArrayOf()
+    }
+
+    @Parcelize
     class SineWave(
-        private val freqHz: Int,
+        val freqHz: Int,
         private val sampleRate: Int,
         private val channelCount: Int,
-        durationMs: Int
+        override val durationMs: Int
     ) : AudioSource(durationMs) {
+        @IgnoredOnParcel
         private val amplitude = AMPLITUDE * Short.MAX_VALUE
+        @IgnoredOnParcel
         private val angularFreq = 2 * PI * freqHz / sampleRate.toDouble()
+        @IgnoredOnParcel
         private var start: Int = 0 // start phase
+
         override fun nextSamples(size: Int): ShortArray {
             start = (start + size / channelCount) % sampleRate
             return ShortArray(size) { i ->
@@ -27,7 +39,7 @@ sealed class AudioSource(val durationMs: Int) {
         }
 
         override fun toString(): String {
-            return "Sine wave $freqHz Hz $durationOut s"
+            return "Sine wave $freqHz Hz ${durationMs.div(1000)} s"
         }
 
         companion object {
@@ -35,30 +47,34 @@ sealed class AudioSource(val durationMs: Int) {
         }
     }
 
-    class WhiteNoise(durationMs: Int) : AudioSource(durationMs) {
+    @Parcelize
+    class WhiteNoise(override val durationMs: Int) : AudioSource(durationMs) {
         override fun nextSamples(size: Int) = ShortArray(size) {
             Random.nextInt(-Short.MAX_VALUE.toInt(), Short.MAX_VALUE.toInt()).toShort()
         }
 
         override fun toString(): String {
-            return "White noise $durationOut s"
+            return "White noise ${durationMs.div(1000)} s"
         }
     }
 
-    class Silence(durationMs: Int) : AudioSource(durationMs) {
+    @Parcelize
+    class Silence(override val durationMs: Int) : AudioSource(durationMs) {
         override fun nextSamples(size: Int) = ShortArray(size) { 0 }
 
         override fun toString(): String {
-            return "Silence $durationOut s"
+            return "Silence ${durationMs.div(1000)} s"
         }
     }
 
+    @Parcelize
     class SpeechSample() : AudioSource(0) {
         override fun nextSamples(size: Int): ShortArray {
             return ShortArray(0)
         }
     }
 
+    @Parcelize
     class AudioSample() : AudioSource(0) {
         override fun nextSamples(size: Int): ShortArray {
             return ShortArray(0)

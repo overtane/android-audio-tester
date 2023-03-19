@@ -9,19 +9,22 @@ import com.github.overtane.audiotester.ui.MainFragment
 
 class MainActivity : AppCompatActivity() {
 
+    private var navHostFragment: NavHostFragment? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        val navHostFragment =
+        navHostFragment =
             supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        val navController = navHostFragment.navController
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
-        NavigationUI.setupActionBarWithNavController(this, navController, appBarConfiguration)
+        navHostFragment?.navController?.let {
+            val appBarConfiguration = AppBarConfiguration(it.graph)
+            NavigationUI.setupActionBarWithNavController(this, it, appBarConfiguration)
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val navHostFragment =
-            supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
-        return navHostFragment.navController.navigateUp()
+        navHostFragment?.navController?.let { return it.navigateUp() }
+        return false
     }
+
 }

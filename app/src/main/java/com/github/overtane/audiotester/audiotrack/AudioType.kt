@@ -14,6 +14,6 @@ enum class AudioType {
         DEFAULT -> "Default"
         ENTERTAINMENT -> "Media"
         SPEECH_RECOGNITION -> "Speech"
-        TELEPHONY -> "Call"
+        TELEPHONY -> "Telephony"
     }
 }

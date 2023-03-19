@@ -3,13 +3,16 @@ package com.github.overtane.audiotester.audiotrack
 import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioTrack
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class AudioStream(
     val type: AudioType,
-    val source: AudioSource,
     val sampleRate: Int,
-    val channelCount: Int
-) {
+    val channelCount: Int,
+    val source: AudioSource,
+) : Parcelable {
 
     val direction: AudioDirection
         get() = when (type) {
@@ -21,7 +24,7 @@ data class AudioStream(
             AudioType.TELEPHONY -> AudioDirection.FULL_DUPLEX
         }
 
-    private val channelMask: Int
+    val channelMask: Int
         get() = when (channelCount) {
             1 -> AudioFormat.CHANNEL_OUT_MONO
             2 -> AudioFormat.CHANNEL_OUT_STEREO
