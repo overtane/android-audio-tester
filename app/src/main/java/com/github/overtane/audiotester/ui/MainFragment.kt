@@ -1,23 +1,27 @@
 package com.github.overtane.audiotester.ui
 
+import android.content.Context
 import android.os.Bundle
 import android.view.*
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
+import androidx.datastore.core.DataStore
+import androidx.datastore.dataStore
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModelProvider
 import com.github.overtane.audiotester.R
 import com.github.overtane.audiotester.audiotrack.AudioStream
-import com.github.overtane.audiotester.audiotrack.AudioType
-import com.github.overtane.audiotester.databinding.FragmentMainAudioSettingsBinding
 import com.github.overtane.audiotester.databinding.FragmentMainBinding
+import com.github.overtane.audiotester.datastore.UserPrefsSerializer
+import com.github.overtane.audiotester.datastore.PreferencesRepository
+import com.github.overtane.audiotester.datastore.StreamPrefs
 
 class MainFragment : Fragment(), MenuProvider {
 
-    private val viewModel: MainViewModel by activityViewModels()
     private lateinit var binding: FragmentMainBinding
+    private lateinit var viewModel: MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -25,6 +29,12 @@ class MainFragment : Fragment(), MenuProvider {
     ): View {
         binding = FragmentMainBinding.inflate(inflater)
         binding.lifecycleOwner = viewLifecycleOwner
+
+        viewModel = ViewModelProvider(
+            this,
+            MainViewModelFactory(PreferencesRepository(requireContext().dataStore))
+
+        )[MainViewModel::class.java]
         // bind ui-data to viewModel instance (left: xml-data, right: viewModel object)
         binding.viewModel = viewModel
 
@@ -33,6 +43,7 @@ class MainFragment : Fragment(), MenuProvider {
             viewLifecycleOwner,
             Lifecycle.State.RESUMED
         )
+
         return binding.root
     }
 
@@ -40,13 +51,13 @@ class MainFragment : Fragment(), MenuProvider {
         super.onViewCreated(view, savedInstanceState)
 
         // Use fragment result listeners to get user input from settings fragment
-        setFragmentResultListener(MAIN_REQUEST_KEY) { key, bundle ->
+        setFragmentResultListener(MAIN_REQUEST_KEY) { _, bundle ->
             val result = bundle.getParcelable<AudioStream>(AUDIO_STREAM_BUNDLE_KEY)
             result?.let {
                 viewModel.setMainAudio(it)
             }
         }
-        setFragmentResultListener(ALT_REQUEST_KEY) { key, bundle ->
+        setFragmentResultListener(ALT_REQUEST_KEY) { _, bundle ->
             val result = bundle.getParcelable<AudioStream>(AUDIO_STREAM_BUNDLE_KEY)
             result?.let {
                 viewModel.setAltAudio(it)
@@ -72,5 +83,12 @@ class MainFragment : Fragment(), MenuProvider {
         const val MAIN_REQUEST_KEY = "MainAudioSettings"
         const val ALT_REQUEST_KEY = "AltAudioSettings"
         const val AUDIO_STREAM_BUNDLE_KEY = "AudioStream"
+
+        private const val DATA_STORE_FILE_NAME = "user_prefs.pb"
+
+        private val Context.dataStore: DataStore<StreamPrefs> by dataStore(
+            fileName = DATA_STORE_FILE_NAME,
+            serializer = UserPrefsSerializer
+        )
     }
 }

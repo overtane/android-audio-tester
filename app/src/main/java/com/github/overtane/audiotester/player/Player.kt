@@ -78,6 +78,10 @@ class Player(private val stream: AudioStream) {
         player.cancel()
     }
 
+    fun isPlaying() : Boolean {
+        return playback.playState == AudioTrack.PLAYSTATE_PLAYING
+    }
+
     /**
      * Calculate the current latency between writing a frame to the output stream and
      * the same frame being presented to the audio hardware.
