@@ -15,15 +15,14 @@ import com.github.overtane.audiotester.player.StreamStat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.runBlocking
 
 class MainViewModel(
-    preferencesRepository: PreferencesRepository
+    private val preferencesRepository: PreferencesRepository
 ): ViewModel() {
 
-    private var _audioStream = MutableLiveData<MutableList<AudioStream>>()
-    val audioStream
-        get() = _audioStream
+    private var _liveStreams = MutableLiveData<MutableList<AudioStream>>()
+    val liveStreams
+        get() = _liveStreams
 
     private var _audioInfoMain = MutableLiveData<StreamStat?>()
     val audioInfoMain
@@ -35,27 +34,31 @@ class MainViewModel(
 
     private var player: MutableList<Player>
 
-    //private val userPrefs = preferencesRepository.dataFlow
-
     init {
         val prefs = preferencesRepository.get()
-        _audioStream.value = prefs
-        preferencesRepository.set()
+        _liveStreams.value = prefs
+        preferencesRepository.set(prefs)
         player =  mutableListOf(Player(prefs[0]), Player(prefs[1]))
     }
 
-    fun setMainAudio(audioStream: AudioStream) =  _audioStream.value?.set(MAIN_AUDIO, audioStream)
+    fun setMainAudio(audioStream: AudioStream) {
+        _liveStreams.value?.set(MAIN_AUDIO, audioStream)
+        preferencesRepository.set(liveStreams.value!!)
+    }
 
     fun onMainAudioClicked(view: View) {
         if (!player[MAIN_AUDIO].isPlaying()) {
-            audioStream.value?.get(0)?.let {
+            liveStreams.value?.get(0)?.let {
                     view.findNavController()
                         .navigate(MainFragmentDirections.actionMainAudioSettings(it))
             }
         }
     }
 
-    fun setAltAudio(audioStream: AudioStream) =  _audioStream.value?.set(ALT_AUDIO, audioStream)
+    fun setAltAudio(audioStream: AudioStream) {
+        _liveStreams.value?.set(ALT_AUDIO, audioStream)
+        preferencesRepository.set(liveStreams.value!!)
+    }
 
     fun onAltAudioClicked(view: View) {
         if (!player[ALT_AUDIO].isPlaying()) {
@@ -80,7 +83,7 @@ class MainViewModel(
     }
 
     private fun startAudio(view: View, i: Int) {
-        player[i] = Player(audioStream.value?.get(i)!!)
+        player[i] = Player(liveStreams.value?.get(i)!!)
         viewModelScope.async(Dispatchers.IO) { player[i].play() }
         viewModelScope.launch {
             player[i].status().collect { updateInfo(i, it) }

@@ -16,7 +16,7 @@ import com.github.overtane.audiotester.audiotrack.AudioStream
 import com.github.overtane.audiotester.databinding.FragmentMainBinding
 import com.github.overtane.audiotester.datastore.UserPrefsSerializer
 import com.github.overtane.audiotester.datastore.PreferencesRepository
-import com.github.overtane.audiotester.datastore.StreamPrefs
+import com.github.overtane.audiotester.datastore.UserPrefs
 
 class MainFragment : Fragment(), MenuProvider {
 
@@ -86,7 +86,7 @@ class MainFragment : Fragment(), MenuProvider {
 
         private const val DATA_STORE_FILE_NAME = "user_prefs.pb"
 
-        private val Context.dataStore: DataStore<StreamPrefs> by dataStore(
+        private val Context.dataStore: DataStore<UserPrefs> by dataStore(
             fileName = DATA_STORE_FILE_NAME,
             serializer = UserPrefsSerializer
         )

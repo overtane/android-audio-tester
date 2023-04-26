@@ -1,0 +1,37 @@
+syntax = "proto3";
+option java_package = "com.github.overtane.audiotester.datastore";
+option java_multiple_files = true;
+
+message UserPrefs {
+
+    enum AudioType {
+        ALERT = 0;
+        ALTERNATE = 1;
+        DEFAULT = 2;
+        ENTERTAINMENT = 3;
+        SPEECH_RECOGNITION = 4;
+        TELEPHONY = 5;
+    }
+
+    enum AudioSourceType {
+        SINE_WAVE = 0;
+        WHITE_NOISE = 1;
+        SILENCE = 2;
+    }
+
+    message AudioSource {
+        AudioSourceType type = 1;
+        int32 duration = 2;
+        int32 frequency = 3;
+    }
+
+    message AudioStream {
+        AudioType type = 1;
+        int32 sample_rate = 2;
+        int32 channel_count = 3;
+        AudioSource source = 4;
+    }
+
+    AudioStream main = 1;
+    AudioStream alt = 2;
+}

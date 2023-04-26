@@ -57,13 +57,13 @@
                         android:id="@+id/primary_audio_format"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@{viewModel.audioStream[0].toString()}"  />
+                        android:text="@{viewModel.liveStreams[0].toString()}"  />
 
                     <TextView
                         android:id="@+id/primary_audio_source"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@{viewModel.audioStream[0].source.toString()}"  />
+                        android:text="@{viewModel.liveStreams[0].source.toString()}"  />
 
                 </LinearLayout>
 
@@ -120,7 +120,7 @@
                         android:clickable="false"
                         android:enabled="false"
                         android:backgroundTint="?attr/colorOnPrimary"
-                        app:microphoneState="@{viewModel.audioStream[0]}"
+                        app:microphoneState="@{viewModel.liveStreams[0]}"
                         app:srcCompat="@drawable/selector_ic_vector_mic"
                         app:tint="@color/selector_button_background_color" />
 
@@ -215,13 +215,13 @@
                         android:id="@+id/secondary_audio_format"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@{viewModel.audioStream[1].toString()}"  />
+                        android:text="@{viewModel.liveStreams[1].toString()}"  />
 
                     <TextView
                         android:id="@+id/secondary_audio_source"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@{viewModel.audioStream[1].source.toString()}"  />
+                        android:text="@{viewModel.liveStreams[1].source.toString()}"  />
 
                 </LinearLayout>
 

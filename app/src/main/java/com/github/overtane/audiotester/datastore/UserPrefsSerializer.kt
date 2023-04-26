@@ -6,17 +6,17 @@ import com.google.protobuf.InvalidProtocolBufferException
 import java.io.InputStream
 import java.io.OutputStream
 
-object UserPrefsSerializer : Serializer<StreamPrefs> {
-    override val defaultValue: StreamPrefs
-        get() = StreamPrefs.getDefaultInstance()
+object UserPrefsSerializer : Serializer<UserPrefs> {
+    override val defaultValue: UserPrefs
+        get() = UserPrefs.getDefaultInstance()
 
-    override suspend fun readFrom(input: InputStream): StreamPrefs {
+    override suspend fun readFrom(input: InputStream): UserPrefs {
         try {
-            return StreamPrefs.parseFrom(input)
+            return UserPrefs.parseFrom(input)
         } catch (exception: InvalidProtocolBufferException) {
             throw CorruptionException("Cannot read proto:", exception)
         }
     }
 
-    override suspend fun writeTo(t: StreamPrefs, output: OutputStream) = t.writeTo(output)
+    override suspend fun writeTo(t: UserPrefs, output: OutputStream) = t.writeTo(output)
 }
