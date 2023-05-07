@@ -8,7 +8,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
 import com.github.overtane.audiotester.R
-import com.github.overtane.audiotester.audiotrack.AudioStream
+import com.github.overtane.audiotester.audiostream.AudioStream
 import com.github.overtane.audiotester.datastore.PreferencesRepository
 import com.github.overtane.audiotester.player.Player
 import com.github.overtane.audiotester.player.StreamStat

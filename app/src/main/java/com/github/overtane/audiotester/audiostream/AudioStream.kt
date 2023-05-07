@@ -1,4 +1,4 @@
-package com.github.overtane.audiotester.audiotrack
+package com.github.overtane.audiotester.audiostream
 
 import android.media.AudioAttributes
 import android.media.AudioFormat

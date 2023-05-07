@@ -4,7 +4,7 @@ import android.media.AudioTimestamp
 import android.media.AudioTrack
 import android.util.Log
 import com.github.overtane.audiotester.TAG
-import com.github.overtane.audiotester.audiotrack.AudioStream
+import com.github.overtane.audiotester.audiostream.AudioStream
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow

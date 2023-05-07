@@ -1,9 +1,9 @@
 package com.github.overtane.audiotester.datastore
 
 import androidx.datastore.core.DataStore
-import com.github.overtane.audiotester.audiotrack.AudioSource
-import com.github.overtane.audiotester.audiotrack.AudioStream as AudioStream
-import com.github.overtane.audiotester.audiotrack.AudioType as AudioType
+import com.github.overtane.audiotester.audiostream.AudioSource
+import com.github.overtane.audiotester.audiostream.AudioStream as AudioStream
+import com.github.overtane.audiotester.audiostream.AudioType as AudioType
 import com.github.overtane.audiotester.datastore.UserPrefs.AudioSource as PrefsAudioSource
 import com.github.overtane.audiotester.datastore.UserPrefs.AudioStream as PrefsAudioStream
 import com.github.overtane.audiotester.datastore.UserPrefs.AudioType as PrefsAudioType

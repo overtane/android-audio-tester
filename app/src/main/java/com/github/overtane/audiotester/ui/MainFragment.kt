@@ -11,8 +11,10 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.github.overtane.audiotester.R
-import com.github.overtane.audiotester.audiotrack.AudioStream
+import com.github.overtane.audiotester.audiostream.AudioStream
 import com.github.overtane.audiotester.databinding.FragmentMainBinding
 import com.github.overtane.audiotester.datastore.UserPrefsSerializer
 import com.github.overtane.audiotester.datastore.PreferencesRepository
@@ -20,20 +22,18 @@ import com.github.overtane.audiotester.datastore.UserPrefs
 
 class MainFragment : Fragment(), MenuProvider {
 
-    private lateinit var binding: FragmentMainBinding
     private lateinit var viewModel: MainViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentMainBinding.inflate(inflater)
+        val binding = FragmentMainBinding.inflate(inflater)
         binding.lifecycleOwner = viewLifecycleOwner
 
         viewModel = ViewModelProvider(
             this,
             MainViewModelFactory(PreferencesRepository(requireContext().dataStore))
-
         )[MainViewModel::class.java]
         // bind ui-data to viewModel instance (left: xml-data, right: viewModel object)
         binding.viewModel = viewModel
@@ -71,13 +71,7 @@ class MainFragment : Fragment(), MenuProvider {
     }
 
     override fun onMenuItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            R.id.menu_about -> {}
-            R.id.menu_devices -> {}
-            R.id.menu_instructions -> {}
-            R.id.menu_recordings -> {}
-        }
-        return false
+        return NavigationUI.onNavDestinationSelected(item, findNavController())
     }
 
     companion object {

@@ -5,9 +5,9 @@ import android.widget.SeekBar
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.overtane.audiotester.R
-import com.github.overtane.audiotester.audiotrack.AudioSource
-import com.github.overtane.audiotester.audiotrack.AudioStream
-import com.github.overtane.audiotester.audiotrack.AudioType
+import com.github.overtane.audiotester.audiostream.AudioSource
+import com.github.overtane.audiotester.audiostream.AudioStream
+import com.github.overtane.audiotester.audiostream.AudioType
 
 class SettingsViewModel : ViewModel() {
 

@@ -22,20 +22,37 @@
     <fragment
         android:id="@+id/mainAudioSettingsFragment"
         android:name="com.github.overtane.audiotester.ui.MainAudioSettingsFragment"
-        android:label="Main Audio Settings"
+        android:label="@string/fragment_main_audio_settings_label"
         tools:layout="@layout/fragment_main_audio_settings">
         <argument
             android:name="audioStream"
-            app:argType="com.github.overtane.audiotester.audiotrack.AudioStream"/>
+            app:argType="com.github.overtane.audiotester.audiostream.AudioStream"/>
     </fragment>
 
     <fragment
         android:id="@+id/altAudioSettingsFragment"
         android:name="com.github.overtane.audiotester.ui.AltAudioSettingsFragment"
-        android:label="Alternate Audio Settings"
+        android:label="@string/fragment_alt_audio_settings_label"
         tools:layout="@layout/fragment_alt_audio_settings">
         <argument
             android:name="audioStream"
-            app:argType="com.github.overtane.audiotester.audiotrack.AudioStream"/>
+            app:argType="com.github.overtane.audiotester.audiostream.AudioStream"/>
     </fragment>
+
+    <fragment
+        android:id="@+id/audioDeviceFragment"
+        android:name="com.github.overtane.audiotester.menu.AudioDeviceListFragment"
+        android:label="@string/fragment_audio_devices_list_label"
+        tools:layout="@layout/fragment_audio_device_list" />
+    <fragment
+        android:id="@+id/instructionsFragment"
+        android:name="com.github.overtane.audiotester.menu.InstructionsFragment"
+        android:label="@string/fragment_instructions_label"
+        tools:layout="@layout/fragment_instructions" />
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="com.github.overtane.audiotester.menu.AboutFragment"
+        android:label="@string/fragment_about_label"
+        tools:layout="@layout/fragment_about" />
+
 </navigation>

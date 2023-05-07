@@ -14,4 +14,6 @@
         <!-- Customize your theme here. -->
         <item name="android:windowBackground">@color/black</item>
     </style>
+
+    <style name="Theme.AudioCompatibilityTester.PopupOverlay" parent="ThemeOverlay.AppCompat.DayNight" />
 </resources>

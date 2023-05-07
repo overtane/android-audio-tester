@@ -4,8 +4,8 @@ import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import com.github.overtane.audiotester.audiotrack.AudioDirection
-import com.github.overtane.audiotester.audiotrack.AudioStream
+import com.github.overtane.audiotester.audiostream.AudioDirection
+import com.github.overtane.audiotester.audiostream.AudioStream
 import com.github.overtane.audiotester.player.StreamStat
 
 @BindingAdapter("progressPercentage")

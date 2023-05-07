@@ -4,6 +4,7 @@ import android.media.AudioFormat
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
+import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
@@ -11,9 +12,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResult
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import com.github.overtane.audiotester.R
-import com.github.overtane.audiotester.audiotrack.AudioSource
-import com.github.overtane.audiotester.audiotrack.AudioStream
-import com.github.overtane.audiotester.audiotrack.AudioType
+import com.github.overtane.audiotester.audiostream.AudioSource
+import com.github.overtane.audiotester.audiostream.AudioStream
+import com.github.overtane.audiotester.audiostream.AudioType
 import com.github.overtane.audiotester.databinding.FragmentMainAudioSettingsBinding
 
 class MainAudioSettingsFragment : Fragment() {
@@ -43,6 +44,7 @@ class MainAudioSettingsFragment : Fragment() {
         initializeFragmentValues(audioStream)
         return binding.root
     }
+
 
     private fun initializeFragmentValues(audioStream: AudioStream) {
         viewModel.fragmentArgument(audioStream)
