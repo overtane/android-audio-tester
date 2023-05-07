@@ -7,7 +7,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.github.overtane.audiotester.ui.MainAudioSettingsViewModel" />
+            type="com.github.overtane.audiotester.ui.SettingsViewModel" />
     </data>
 
     <ScrollView

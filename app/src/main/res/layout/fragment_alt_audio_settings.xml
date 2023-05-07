@@ -1,14 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     tools:context=".ui.AltAudioSettingsFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <data>
+        <variable
+            name="viewModel"
+            type="com.github.overtane.audiotester.ui.SettingsViewModel" />
+    </data>
 
-</FrameLayout>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/audio_type_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                android:text="Sample rate and channel count"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <LinearLayout
+                android:id="@+id/layout_audio_format"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:orientation="horizontal"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/audio_type_title">
+
+                <RadioGroup
+                    android:id="@+id/radio_group_sample_rate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:onCheckedChanged="@{(view, id) -> viewModel.onAudioFormatChanged(view, id)}">
+
+                    <RadioButton
+                        android:id="@+id/radio_button_sample_rate_44_1khz"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="44.1 kHz" />
+
+                    <RadioButton
+                        android:id="@+id/radio_button_sample_rate_48khz"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="48 kHz" />
+
+                </RadioGroup>
+
+                <RadioGroup
+                    android:id="@+id/radio_group_channel_count"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_weight="1"
+                    android:onCheckedChanged="@{(view, id) -> viewModel.onAudioFormatChanged(view, id)}">
+
+                    <RadioButton
+                        android:id="@+id/radio_button_channel_count_mono"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Mono" />
+
+                    <RadioButton
+                        android:id="@+id/radio_button_channel_count_stereo"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="Stereo" />
+
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/layout_audio_source"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:orientation="vertical"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_audio_format">
+
+            <RadioGroup
+                android:id="@+id/radio_group_audio_source"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:onCheckedChanged="@{(view, id) -> viewModel.onAudioSourceChanged(view, id)}">
+
+                <RadioButton
+                    android:id="@+id/radio_button_audio_source_sine_wave"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Sine Wave"
+                    android:layout_weight="1" />
+
+                <RadioButton
+                    android:id="@+id/radio_button_audio_source_white_noise"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="White Noise"
+                    android:layout_weight="1" />
+
+                <RadioButton
+                    android:id="@+id/radio_button_audio_source_silence"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="Silence"
+                    android:layout_weight="1"/>
+
+            </RadioGroup>
+
+            <TextView
+                android:id="@+id/text_duration_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginStart="8dp"
+                app:audioDuration="@{viewModel.duration}"
+                android:text="Duration" />
+
+            <SeekBar
+                android:id="@+id/slider_duration"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:min="@integer/audio_duration_min"
+                android:max="@integer/audio_duration_max"
+                android:onProgressChanged="@{(view, progress, fromUser) -> viewModel.onProgressChanged(view, progress, fromUser)}"
+                app:progressCheck="@{viewModel.duration}" />
+
+
+            <TextView
+                android:id="@+id/text_frequency_value"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="8dp"
+                app:sineWaveFrequency="@{viewModel.frequency}"
+                android:text="Frequency" />
+
+            <SeekBar
+                android:id="@+id/slider_frequency"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:min="@integer/sine_freq_min"
+                android:max="@integer/sine_freq_max"
+                android:onProgressChanged="@{(view, progress, fromUser) -> viewModel.onProgressChanged(view, progress, fromUser)}"
+                app:progressCheck="@{viewModel.frequency}" />
+
+        </LinearLayout>
+
+            <Button
+                android:id="@+id/ok_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="OK"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_audio_source" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</layout>

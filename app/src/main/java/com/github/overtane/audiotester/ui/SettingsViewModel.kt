@@ -1,17 +1,15 @@
 package com.github.overtane.audiotester.ui
 
-import android.util.Log
 import android.view.View
 import android.widget.SeekBar
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.github.overtane.audiotester.R
-import com.github.overtane.audiotester.TAG
 import com.github.overtane.audiotester.audiotrack.AudioSource
 import com.github.overtane.audiotester.audiotrack.AudioStream
 import com.github.overtane.audiotester.audiotrack.AudioType
 
-class MainAudioSettingsViewModel() : ViewModel() {
+class SettingsViewModel : ViewModel() {
 
     enum class UiAudioSource {
         SINE_WAVE,

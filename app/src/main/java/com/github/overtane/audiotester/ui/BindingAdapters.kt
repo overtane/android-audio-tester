@@ -5,15 +5,16 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.github.overtane.audiotester.audiotrack.AudioDirection
-import com.github.overtane.audiotester.audiotrack.AudioSource
 import com.github.overtane.audiotester.audiotrack.AudioStream
 import com.github.overtane.audiotester.player.StreamStat
 
 @BindingAdapter("progressPercentage")
 fun bindProgress(progressBar: ProgressBar, streamStat: StreamStat?) {
-    streamStat?.let {
-        val progress = (it.framesStreamed.toDouble() / it.totalFrames * 100).toInt()
+    if (streamStat != null) {
+        val progress = (streamStat.framesStreamed.toDouble() / streamStat.totalFrames * 100).toInt()
         progressBar.progress = progress
+    } else {
+        progressBar.progress = 0
     }
 }
 

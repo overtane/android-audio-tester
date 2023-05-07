@@ -57,6 +57,7 @@ class MainFragment : Fragment(), MenuProvider {
                 viewModel.setMainAudio(it)
             }
         }
+
         setFragmentResultListener(ALT_REQUEST_KEY) { _, bundle ->
             val result = bundle.getParcelable<AudioStream>(AUDIO_STREAM_BUNDLE_KEY)
             result?.let {

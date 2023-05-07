@@ -2,21 +2,15 @@ package com.github.overtane.audiotester.ui
 
 import android.media.AudioFormat
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SeekBar
 import androidx.core.os.bundleOf
-import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResult
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment.Companion.findNavController
 import com.github.overtane.audiotester.R
-import com.github.overtane.audiotester.TAG
 import com.github.overtane.audiotester.audiotrack.AudioSource
 import com.github.overtane.audiotester.audiotrack.AudioStream
 import com.github.overtane.audiotester.audiotrack.AudioType
@@ -24,7 +18,7 @@ import com.github.overtane.audiotester.databinding.FragmentMainAudioSettingsBind
 
 class MainAudioSettingsFragment : Fragment() {
 
-    private val viewModel: MainAudioSettingsViewModel by activityViewModels()
+    private val viewModel: SettingsViewModel by activityViewModels()
     private lateinit var binding: FragmentMainAudioSettingsBinding
 
     override fun onCreateView(
@@ -105,8 +99,8 @@ class MainAudioSettingsFragment : Fragment() {
         binding.radioButtonSampleRate48khz.isEnabled = selections[5]
     }
 
-    fun MainAudioSettingsViewModel.UiAudioSource.checkAttributeVisibility() {
-        val visible = when (this == MainAudioSettingsViewModel.UiAudioSource.SINE_WAVE) {
+    private fun SettingsViewModel.UiAudioSource.checkAttributeVisibility() {
+        val visible = when (this == SettingsViewModel.UiAudioSource.SINE_WAVE) {
             true -> View.VISIBLE
             false -> View.INVISIBLE
         }

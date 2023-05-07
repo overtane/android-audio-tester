@@ -97,7 +97,7 @@ class Player(private val stream: AudioStream) {
      *
      */
     private fun latencyMs() : Int {
-        var timestamp = AudioTimestamp()
+        val timestamp = AudioTimestamp()
         if (!playback.getTimestamp(timestamp)) {
             return 0
         }

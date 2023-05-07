@@ -1,60 +1,79 @@
 package com.github.overtane.audiotester.ui
 
+import android.media.AudioFormat
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResult
+import androidx.navigation.fragment.NavHostFragment
 import com.github.overtane.audiotester.R
+import com.github.overtane.audiotester.audiotrack.AudioSource
+import com.github.overtane.audiotester.audiotrack.AudioStream
+import com.github.overtane.audiotester.databinding.FragmentAltAudioSettingsBinding
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [AltAudioSettingsFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class AltAudioSettingsFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private val viewModel: SettingsViewModel by activityViewModels()
+    private lateinit var binding: FragmentAltAudioSettingsBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_alt_audio_settings, container, false)
+    ): View {
+        binding = FragmentAltAudioSettingsBinding.inflate(inflater)
+        binding.lifecycleOwner = viewLifecycleOwner
+        binding.viewModel = viewModel
+
+        binding.okButton.setOnClickListener {
+            setFragmentResult(
+                MainFragment.ALT_REQUEST_KEY,
+                bundleOf(MainFragment.AUDIO_STREAM_BUNDLE_KEY to viewModel.fragmentResult())
+            )
+            NavHostFragment.findNavController(this).navigateUp()
+        }
+
+        viewModel.source.observe(viewLifecycleOwner) { source -> source.checkAttributeVisibility() }
+
+        val audioStream = AltAudioSettingsFragmentArgs.fromBundle(requireArguments()).audioStream
+        initializeFragmentValues(audioStream)
+        return binding.root
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment AltAudioSettingsFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            AltAudioSettingsFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    private fun initializeFragmentValues(audioStream: AudioStream) {
+        viewModel.fragmentArgument(audioStream)
+        audioStream.let {
+            binding.radioGroupSampleRate.check(it.sampleRate.checkId())
+            binding.radioGroupChannelCount.check(it.channelMask.checkId())
+            binding.radioGroupAudioSource.check(it.source.checkId())
+        }
     }
+
+    private fun Int.checkId(): Int = when (this) {
+        AudioFormat.CHANNEL_OUT_MONO -> R.id.radio_button_channel_count_mono
+        AudioFormat.CHANNEL_OUT_STEREO -> R.id.radio_button_channel_count_stereo
+        44100 -> R.id.radio_button_sample_rate_44_1khz
+        48000 -> R.id.radio_button_sample_rate_48khz
+        else -> androidx.appcompat.R.id.none
+    }
+
+    private fun AudioSource.checkId(): Int = when (this) {
+        is AudioSource.SineWave -> R.id.radio_button_audio_source_sine_wave
+        is AudioSource.WhiteNoise -> R.id.radio_button_audio_source_white_noise
+        is AudioSource.Silence -> R.id.radio_button_audio_source_silence
+        else -> androidx.appcompat.R.id.none
+    }
+
+    private fun SettingsViewModel.UiAudioSource.checkAttributeVisibility() {
+        val visible = when (this == SettingsViewModel.UiAudioSource.SINE_WAVE) {
+            true -> View.VISIBLE
+            false -> View.INVISIBLE
+        }
+        binding.sliderFrequency.visibility = visible
+        binding.textFrequencyValue.visibility = visible
+    }
+
 }

@@ -44,11 +44,13 @@ class MainViewModel(
     fun setMainAudio(audioStream: AudioStream) {
         _liveStreams.value?.set(MAIN_AUDIO, audioStream)
         preferencesRepository.set(liveStreams.value!!)
+        _audioInfoMain.value = null // Clear streaming data
+
     }
 
     fun onMainAudioClicked(view: View) {
         if (!player[MAIN_AUDIO].isPlaying()) {
-            liveStreams.value?.get(0)?.let {
+            liveStreams.value?.get(MAIN_AUDIO)?.let {
                     view.findNavController()
                         .navigate(MainFragmentDirections.actionMainAudioSettings(it))
             }
@@ -58,11 +60,15 @@ class MainViewModel(
     fun setAltAudio(audioStream: AudioStream) {
         _liveStreams.value?.set(ALT_AUDIO, audioStream)
         preferencesRepository.set(liveStreams.value!!)
+        _audioInfoAlt.value = null // Clear streaming data
     }
 
     fun onAltAudioClicked(view: View) {
         if (!player[ALT_AUDIO].isPlaying()) {
-            view.findNavController().navigate(MainFragmentDirections.actionAltAudioSettings())
+            liveStreams.value?.get(ALT_AUDIO)?.let {
+                view.findNavController()
+                    .navigate(MainFragmentDirections.actionAltAudioSettings(it))
+            }
         }
     }
 
