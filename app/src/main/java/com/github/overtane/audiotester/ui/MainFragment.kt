@@ -16,8 +16,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
-import com.github.overtane.audiotester.MainActivity
-import com.github.overtane.audiotester.Manifest
 import com.github.overtane.audiotester.R
 import com.github.overtane.audiotester.audiostream.AudioStream
 import com.github.overtane.audiotester.databinding.FragmentMainBinding

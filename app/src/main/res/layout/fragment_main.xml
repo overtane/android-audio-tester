@@ -135,7 +135,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/primary_buttons">
 
                     <TextView
-                        android:id="@+id/primary_stream_info_text"
+                        android:id="@+id/primary_playback_info_text"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
@@ -152,6 +152,14 @@
 
                 </LinearLayout>
 
+                <TextView
+                    android:id="@+id/primary_record_info_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@{viewModel.recordInfo.toString()}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/primary_stream_info"/>
+
             <ProgressBar
                     android:id="@+id/progressBar"
                     style="?android:attr/progressBarStyleHorizontal"
@@ -160,7 +168,7 @@
                     android:layout_marginTop="8dp"
                     app:progressPercentage="@{viewModel.playbackInfoMain}"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/primary_stream_info" />
+                    app:layout_constraintTop_toBottomOf="@+id/primary_record_info_text" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

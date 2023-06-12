@@ -16,14 +16,14 @@ class Player(private val stream: AudioStream) {
     private lateinit var player: Deferred<Unit>
 
     private var status =
-        StreamStat(stream.sampleRate, stream.source.durationMs, playback.bufferSizeInFrames)
+        PlaybackStat(stream.sampleRate, stream.source.durationMs, playback.bufferSizeInFrames)
 
     init {
         Log.d(TAG, "Audio format: $stream")
         Log.d(TAG, "Audio source: ${stream.source}")
     }
 
-    fun status() : Flow<StreamStat> = flow {
+    fun status() : Flow<PlaybackStat> = flow {
         emit(status)
         do {
             delay((1000 / EMIT_FREQ_HZ).toLong())
@@ -89,9 +89,8 @@ class Player(private val stream: AudioStream) {
      * Here's how the calculation works:
      *
      * 1) Get the time a particular frame was presented to the audio hardware
-     * @see AudioStream::getTimestamp
      * 2) From this extrapolate the time which the *next* audio frame written to the stream
-     * will be presented
+     *    will be presented
      * 3) Assume that the next audio frame is written at the current time
      * 4) currentLatency = nextFramePresentationTime - nextFrameWriteTime
      *

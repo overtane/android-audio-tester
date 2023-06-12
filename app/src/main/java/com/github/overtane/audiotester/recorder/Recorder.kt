@@ -4,7 +4,6 @@ import android.media.AudioRecord
 import android.util.Log
 import com.github.overtane.audiotester.TAG
 import com.github.overtane.audiotester.audiostream.AudioStream
-import com.github.overtane.audiotester.player.StreamStat
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -16,14 +15,14 @@ class Recorder(private val stream: AudioStream) {
     private lateinit var recorder: Deferred<Unit>
 
     private var status =
-        StreamStat(stream.sampleRate, stream.source.durationMs, record.bufferSizeInFrames)
+        RecordStat(stream.sampleRate, stream.source.durationMs, record.bufferSizeInFrames)
 
     init {
         Log.d(TAG, "Audio format: $stream")
         Log.d(TAG, "Audio source: ${stream.source}")
     }
 
-    fun status() : Flow<StreamStat> = flow {
+    fun status() : Flow<RecordStat> = flow {
         emit(status)
         do {
             delay((1000 / EMIT_FREQ_HZ).toLong())
@@ -32,7 +31,7 @@ class Recorder(private val stream: AudioStream) {
     }
 
     suspend fun record() = coroutineScope {
-        recorder= async { recordLoop() }
+        recorder = async { recordLoop() }
         Log.d(TAG, "Record started")
         recorder.join()
         Log.d(TAG, "Record stopped")
@@ -54,7 +53,7 @@ class Recorder(private val stream: AudioStream) {
                 val read = record.read(buf, 0, buf.size)
                 status.framesStreamed += read / record.channelCount
                 status.latencyMs = latencyMs()
-                Log.d(TAG, "Wrote $read samples: ${buf[0]}, ${buf[1]}, ${buf[2]}, ${buf[3]}")
+                //Log.d(TAG, "Wrote $read samples: ${buf[0]}, ${buf[1]}, ${buf[2]}, ${buf[3]}")
             }
             Log.d(TAG, "Record loop exited")
         }

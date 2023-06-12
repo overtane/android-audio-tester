@@ -2,7 +2,7 @@ package com.github.overtane.audiotester.player
 
 import android.media.AudioTrack
 
-data class StreamStat(val sampleRate: Int, val durationMs: Int, var bufferSizeInFrames: Int) {
+data class PlaybackStat(val sampleRate: Int, val durationMs: Int, var bufferSizeInFrames: Int) {
     val totalFrames = sampleRate * durationMs / 1000
     var deviceId: Int = 0
     var performanceMode: Int = 0
@@ -12,8 +12,8 @@ data class StreamStat(val sampleRate: Int, val durationMs: Int, var bufferSizeIn
 
     override fun toString(): String {
         val bufferSizeInMs: Int = bufferSizeInFrames / (sampleRate / 1000)
-        return "Device $deviceId, Fast track ${fastTrack()}, Buffer size $bufferSizeInFrames ($bufferSizeInMs ms), " +
-                "Underruns $underruns, Latency $latencyMs ms"
+        return "Playback: Device $deviceId, Fast track ${fastTrack()}, Buffer size $bufferSizeInFrames ($bufferSizeInMs ms), " +
+                "Underruns $underruns, Latency $latencyMs ms, Frames $framesStreamed"
     }
 
     private fun fastTrack(): String =
