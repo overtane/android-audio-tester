@@ -1,8 +1,11 @@
 package com.github.overtane.audiotester.ui
 
 import android.content.Context
+import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.*
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.datastore.core.DataStore
@@ -13,6 +16,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.github.overtane.audiotester.MainActivity
+import com.github.overtane.audiotester.Manifest
 import com.github.overtane.audiotester.R
 import com.github.overtane.audiotester.audiostream.AudioStream
 import com.github.overtane.audiotester.databinding.FragmentMainBinding

@@ -1,9 +1,16 @@
 package com.github.overtane.audiotester.audiostream
 
+
+import android.Manifest
+import android.annotation.SuppressLint
+import android.content.pm.PackageManager
 import android.media.AudioAttributes
 import android.media.AudioFormat
+import android.media.AudioRecord
 import android.media.AudioTrack
+import android.media.MediaRecorder
 import android.os.Parcelable
+import androidx.core.app.ActivityCompat
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -71,6 +78,23 @@ data class AudioStream(
             )
             .setPerformanceMode(PERFORMANCE_MODE)
             .setTransferMode(TRANSFER_MODE)
+            .build()
+
+    @SuppressLint("MissingPermission") // Record permission is checked in viewmodel
+    fun buildRecord(): AudioRecord =
+        AudioRecord.Builder()
+            // TODO audio source may be different for different streams
+            .setAudioSource(MediaRecorder.AudioSource.DEFAULT)
+            .setAudioFormat(
+                AudioFormat.Builder()
+                    .setEncoding(SAMPLE_FORMAT)
+                    .setSampleRate(sampleRate)
+                    .setChannelMask(channelMask)
+                    .build()
+            )
+            .setBufferSizeInBytes(
+                AudioRecord.getMinBufferSize(sampleRate, channelMask, SAMPLE_FORMAT)
+            )
             .build()
 
     override fun toString(): String {

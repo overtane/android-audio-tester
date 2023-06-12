@@ -139,7 +139,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="@{viewModel.audioInfoMain.toString()}" />
+                        android:text="@{viewModel.playbackInfoMain.toString()}" />
 
                     <ImageView
                         android:id="@+id/primary_stream_info_error"
@@ -158,7 +158,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    app:progressPercentage="@{viewModel.audioInfoMain}"
+                    app:progressPercentage="@{viewModel.playbackInfoMain}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/primary_stream_info" />
 
@@ -291,7 +291,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="@{viewModel.audioInfoAlt.toString()}" />
+                        android:text="@{viewModel.playbackInfoAlt.toString()}" />
 
                     <ImageView
                         android:id="@+id/secondary_stream_info_error"
@@ -309,7 +309,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        app:progressPercentage="@{viewModel.audioInfoAlt}"
+                        app:progressPercentage="@{viewModel.playbackInfoAlt}"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/secondary_stream_info" />
 
