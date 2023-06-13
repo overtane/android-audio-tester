@@ -2,9 +2,11 @@ package com.github.overtane.audiotester.ui
 
 
 import android.view.View
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
 import com.github.overtane.audiotester.R
@@ -39,6 +41,8 @@ class MainViewModel(
     val recordInfo
         get() = _recordInfo
 
+    var isRecording = MutableLiveData<Boolean>()
+
     private var player: MutableList<Player>
     private var recorder: Recorder? = null
 
@@ -47,6 +51,7 @@ class MainViewModel(
         _liveStreams.value = prefs
         preferencesRepository.set(prefs)
         player = mutableListOf(Player(prefs[0]), Player(prefs[1]))
+        isRecording.value = false
     }
 
     fun setMainAudio(audioStream: AudioStream) {
@@ -116,9 +121,11 @@ class MainViewModel(
     private fun startRecord() {
         recorder = Recorder(liveStreams.value?.get(0)!!)
         viewModelScope.async(Dispatchers.IO) { recorder?.record() }
+        isRecording.value = true
         viewModelScope.launch {
             recorder?.status()?.collect { _recordInfo.value = it }
             recorder?.stop()
+            isRecording.value = false
         }
     }
 
@@ -146,12 +153,14 @@ class MainViewModel(
 
     private fun stopRecord() {
         recorder?.stop()
+        recorder = null
+        isRecording.value = false
     }
 
     private fun isPlaying() =
-        player[MAIN_AUDIO].isPlaying() || player[ALT_AUDIO].isPlaying() ||
-                recorder?.isRecording() ?: false
+        player[MAIN_AUDIO].isPlaying() || player[ALT_AUDIO].isPlaying() || isRecording()
 
+    private fun isRecording() =  recorder?.isRecording() ?: false
 
     companion object {
         const val MAIN_AUDIO = 0

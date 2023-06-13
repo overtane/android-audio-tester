@@ -122,7 +122,7 @@
                         android:backgroundTint="?attr/colorOnPrimary"
                         app:microphoneState="@{viewModel.liveStreams[0]}"
                         app:srcCompat="@drawable/selector_ic_vector_mic"
-                        app:tint="@color/selector_button_background_color" />
+                        app:tint="?attr/colorPrimary" />
 
                 </LinearLayout>
 

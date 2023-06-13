@@ -1,11 +1,9 @@
 package com.github.overtane.audiotester.ui
 
+import android.animation.ObjectAnimator
 import android.content.Context
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.*
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.datastore.core.DataStore
@@ -25,13 +23,16 @@ import com.github.overtane.audiotester.datastore.UserPrefs
 
 class MainFragment : Fragment(), MenuProvider {
 
+    private lateinit var binding: FragmentMainBinding
     private lateinit var viewModel: MainViewModel
+
+    private var animator: ObjectAnimator? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val binding = FragmentMainBinding.inflate(inflater)
+        binding = FragmentMainBinding.inflate(inflater)
         binding.lifecycleOwner = viewLifecycleOwner
 
         viewModel = ViewModelProvider(
@@ -46,6 +47,14 @@ class MainFragment : Fragment(), MenuProvider {
             viewLifecycleOwner,
             Lifecycle.State.RESUMED
         )
+
+        viewModel.isRecording.observe(viewLifecycleOwner) { recording ->
+            if (recording) {
+                startMicAnimation()
+            } else {
+                stopMicAnimation()
+            }
+        }
 
         return binding.root
     }
@@ -75,6 +84,25 @@ class MainFragment : Fragment(), MenuProvider {
 
     override fun onMenuItemSelected(item: MenuItem): Boolean {
         return NavigationUI.onNavDestinationSelected(item, findNavController())
+    }
+
+    private fun startMicAnimation() {
+        val icon = binding.buttonPrimaryAudioRecording
+
+        animator =
+            ObjectAnimator.ofFloat(icon, View.ALPHA, 0f).apply {
+                duration = 600
+                repeatCount = 100
+                repeatMode = ObjectAnimator.REVERSE
+                start()
+            }
+    }
+
+    private fun stopMicAnimation() {
+        val icon = binding.buttonPrimaryAudioRecording
+        animator?.cancel()
+        icon.alpha = 1.0f
+        animator = null
     }
 
     companion object {

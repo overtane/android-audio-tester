@@ -3,14 +3,12 @@ package com.github.overtane.audiotester.audiostream
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.content.pm.PackageManager
 import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioRecord
 import android.media.AudioTrack
 import android.media.MediaRecorder
 import android.os.Parcelable
-import androidx.core.app.ActivityCompat
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
