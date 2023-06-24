@@ -17,11 +17,14 @@
         <action
             android:id="@+id/action_altAudioSettings"
             app:destination="@id/altAudioSettingsFragment" />
+        <action
+            android:id="@+id/action_recordingPlaybackFragment"
+            app:destination="@id/recordingPlaybackFragment" />
     </fragment>
 
     <fragment
         android:id="@+id/mainAudioSettingsFragment"
-        android:name="com.github.overtane.audiotester.ui.MainAudioSettingsFragment"
+        android:name="com.github.overtane.audiotester.settings.MainAudioSettingsFragment"
         android:label="@string/fragment_main_audio_settings_label"
         tools:layout="@layout/fragment_main_audio_settings">
         <argument
@@ -31,12 +34,28 @@
 
     <fragment
         android:id="@+id/altAudioSettingsFragment"
-        android:name="com.github.overtane.audiotester.ui.AltAudioSettingsFragment"
+        android:name="com.github.overtane.audiotester.settings.AltAudioSettingsFragment"
         android:label="@string/fragment_alt_audio_settings_label"
         tools:layout="@layout/fragment_alt_audio_settings">
         <argument
             android:name="audioStream"
             app:argType="com.github.overtane.audiotester.audiostream.AudioStream"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/recordingPlaybackFragment"
+        android:name="com.github.overtane.audiotester.recording.RecordingPlaybackFragment"
+        android:label="Recording Playback"
+        tools:layout="@layout/fragment_recording_playback">
+        <argument
+            android:name="audioStream"
+            app:argType="com.github.overtane.audiotester.audiostream.AudioStream"/>
+        <argument
+            android:name="recording"
+            app:argType="com.github.overtane.audiotester.recorder.RecordStat"/>
+        <argument
+            android:name="recorded"
+            app:argType="java.util.Date"/>
     </fragment>
 
     <fragment
@@ -54,5 +73,4 @@
         android:name="com.github.overtane.audiotester.menu.AboutFragment"
         android:label="@string/fragment_about_label"
         tools:layout="@layout/fragment_about" />
-
 </navigation>

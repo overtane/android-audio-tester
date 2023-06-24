@@ -1,4 +1,4 @@
-package com.github.overtane.audiotester.ui
+package com.github.overtane.audiotester.settings
 
 import android.media.AudioFormat
 import android.os.Bundle
@@ -9,15 +9,17 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.setFragmentResult
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.NavHostFragment
 import com.github.overtane.audiotester.R
 import com.github.overtane.audiotester.audiostream.AudioSource
 import com.github.overtane.audiotester.audiostream.AudioStream
 import com.github.overtane.audiotester.databinding.FragmentAltAudioSettingsBinding
+import com.github.overtane.audiotester.ui.MainFragment
 
 class AltAudioSettingsFragment : Fragment() {
 
-    private val viewModel: SettingsViewModel by activityViewModels()
+    private lateinit var viewModel: SettingsViewModel
     private lateinit var binding: FragmentAltAudioSettingsBinding
 
     override fun onCreateView(
@@ -26,6 +28,11 @@ class AltAudioSettingsFragment : Fragment() {
     ): View {
         binding = FragmentAltAudioSettingsBinding.inflate(inflater)
         binding.lifecycleOwner = viewLifecycleOwner
+        val audioStream = MainAudioSettingsFragmentArgs.fromBundle(requireArguments()).audioStream
+        viewModel = ViewModelProvider(
+            this,
+            SettingsViewModelFactory(audioStream)
+        )[SettingsViewModel::class.java]
         binding.viewModel = viewModel
 
         binding.okButton.setOnClickListener {
@@ -37,17 +44,14 @@ class AltAudioSettingsFragment : Fragment() {
         }
 
         viewModel.source.observe(viewLifecycleOwner) { source -> source.checkAttributeVisibility() }
-
-        val audioStream = AltAudioSettingsFragmentArgs.fromBundle(requireArguments()).audioStream
         initializeFragmentValues(audioStream)
         return binding.root
     }
 
     private fun initializeFragmentValues(audioStream: AudioStream) {
-        viewModel.fragmentArgument(audioStream)
         audioStream.let {
             binding.radioGroupSampleRate.check(it.sampleRate.checkId())
-            binding.radioGroupChannelCount.check(it.channelMask.checkId())
+            binding.radioGroupChannelCount.check(it.playbackChannelMask.checkId())
             binding.radioGroupAudioSource.check(it.source.checkId())
         }
     }

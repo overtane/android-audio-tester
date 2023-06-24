@@ -2,7 +2,7 @@
     <string name="app_name">Audio Compatibility Tester</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello about fragment</string>
-    <string name="save_button_text">Save</string>
+    <string name="save_button_text">Use values</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
 
@@ -97,4 +97,6 @@
     <string name="fragment_main_audio_settings_label">Main Audio Settings</string>
     <string name="fragment_instructions_label">Instructions</string>
     <string name="fragment_about_label">About</string>
+    <string name="button_text_play">Play</string>
+    <string name="button_text_stop">Stop</string>
 </resources>

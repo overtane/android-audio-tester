@@ -4,6 +4,7 @@ import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Bundle
 import android.view.*
+import android.view.animation.Animation
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.datastore.core.DataStore
@@ -11,6 +12,7 @@ import androidx.datastore.dataStore
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -34,7 +36,6 @@ class MainFragment : Fragment(), MenuProvider {
     ): View {
         binding = FragmentMainBinding.inflate(inflater)
         binding.lifecycleOwner = viewLifecycleOwner
-
         viewModel = ViewModelProvider(
             this,
             MainViewModelFactory(PreferencesRepository(requireContext().dataStore))
@@ -78,13 +79,11 @@ class MainFragment : Fragment(), MenuProvider {
         }
     }
 
-    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+    override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) =
         menuInflater.inflate(R.menu.main_overflow_menu, menu)
-    }
 
-    override fun onMenuItemSelected(item: MenuItem): Boolean {
-        return NavigationUI.onNavDestinationSelected(item, findNavController())
-    }
+    override fun onMenuItemSelected(item: MenuItem) =
+        NavigationUI.onNavDestinationSelected(item, findNavController())
 
     private fun startMicAnimation() {
         val icon = binding.buttonPrimaryAudioRecording
@@ -92,7 +91,7 @@ class MainFragment : Fragment(), MenuProvider {
         animator =
             ObjectAnimator.ofFloat(icon, View.ALPHA, 0f).apply {
                 duration = 600
-                repeatCount = 100
+                repeatCount = Animation.INFINITE
                 repeatMode = ObjectAnimator.REVERSE
                 start()
             }
@@ -118,3 +117,5 @@ class MainFragment : Fragment(), MenuProvider {
         )
     }
 }
+
+

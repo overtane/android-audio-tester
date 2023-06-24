@@ -120,6 +120,7 @@
                         android:clickable="false"
                         android:enabled="false"
                         android:backgroundTint="?attr/colorOnPrimary"
+                        android:onClick="@{(view) -> viewModel.onMicButtonClicked(view)}"
                         app:microphoneState="@{viewModel.liveStreams[0]}"
                         app:srcCompat="@drawable/selector_ic_vector_mic"
                         app:tint="?attr/colorPrimary" />
@@ -161,7 +162,7 @@
                     app:layout_constraintTop_toBottomOf="@+id/primary_stream_info"/>
 
             <ProgressBar
-                    android:id="@+id/progressBar"
+                    android:id="@+id/primary_audio_progress_bar"
                     style="?android:attr/progressBarStyleHorizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -312,7 +313,7 @@
                 </LinearLayout>
 
                 <ProgressBar
-                        android:id="@+id/progressBarSecondaryAudio"
+                        android:id="@+id/secondary_audio_progress_bar"
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"

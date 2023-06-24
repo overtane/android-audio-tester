@@ -43,7 +43,7 @@ class Player(private val stream: AudioStream) {
     private suspend fun playLoop() {
         val duration = stream.source.durationMs
         // Prime track with one full buffer
-        var buf = stream.source.nextSamples(playback.bufferSizeInFrames * playback.channelCount)
+        var buf = stream.source.nextSamples(playback.bufferSizeInFrames * playback.channelCount * 2)
         var written = playback.write(buf, 0, buf.size, AudioTrack.WRITE_BLOCKING)
         status.framesStreamed += written / playback.channelCount
         playback.play()
@@ -58,12 +58,12 @@ class Player(private val stream: AudioStream) {
         withTimeout(duration.toLong()) {
             while (isActive) { // is active until cancelled
                 buf = stream.source.nextSamples(playback.bufferSizeInFrames * playback.channelCount)
+                // Note: Write returns number of shorts
                 written = playback.write(buf, 0, buf.size, AudioTrack.WRITE_BLOCKING)
                 // calculate latency for the first sample we just wrote
                 // Note: we should know quite exactly when the first sample was written.
                 // Here it is assumed that next frame will be written 'a short while' after latency
                 // has been calculated (i.e. on next round)
-                // TODO mutual exclusion
                 status.framesStreamed += written / playback.channelCount
                 status.underruns = playback.underrunCount
                 status.latencyMs = latencyMs()

@@ -1,5 +1,6 @@
-package com.github.overtane.audiotester.ui
+package com.github.overtane.audiotester
 
+import android.util.Log
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
@@ -15,6 +16,20 @@ fun bindProgress(progressBar: ProgressBar, playbackStat: PlaybackStat?) {
         progressBar.progress = progress
     } else {
         progressBar.progress = 0
+    }
+}
+
+@BindingAdapter("remainingSeconds", "totalSeconds")
+fun bindRemaining(textView: TextView, playbackStat: PlaybackStat?, durationMs: Int) {
+    if (playbackStat != null) {
+        Log.d("A", "PROGRESS")
+        val totalTime = playbackStat.totalFrames / playbackStat.sampleRate
+        val elapsedTime = playbackStat.framesStreamed / playbackStat.sampleRate
+        val remainingTime = totalTime - elapsedTime
+        textView.text = remainingTime.toString()
+    } else {
+        val remainingTime = durationMs / 1000
+        textView.text = remainingTime.toString()
     }
 }
 

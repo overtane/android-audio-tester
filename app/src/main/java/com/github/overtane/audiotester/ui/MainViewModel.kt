@@ -1,15 +1,15 @@
 package com.github.overtane.audiotester.ui
 
 
+import android.util.Log
 import android.view.View
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
 import com.github.overtane.audiotester.R
+import com.github.overtane.audiotester.TAG
 import com.github.overtane.audiotester.audiostream.AudioDirection
 import com.github.overtane.audiotester.audiostream.AudioStream
 import com.github.overtane.audiotester.datastore.PreferencesRepository
@@ -20,6 +20,8 @@ import com.github.overtane.audiotester.recorder.RecordStat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
+import java.util.Calendar
+import java.util.Date
 
 class MainViewModel(
     private val preferencesRepository: PreferencesRepository
@@ -41,10 +43,10 @@ class MainViewModel(
     val recordInfo
         get() = _recordInfo
 
-    var isRecording = MutableLiveData<Boolean>()
-
     private var player: MutableList<Player>
     private var recorder: Recorder? = null
+    var isRecording = MutableLiveData<Boolean>()
+    private var recorded: Date = Calendar.getInstance().time
 
     init {
         val prefs = preferencesRepository.get()
@@ -93,6 +95,17 @@ class MainViewModel(
         }
     }
 
+    fun onMicButtonClicked(view: View) {
+        val stream = liveStreams.value?.get(MAIN_AUDIO)!!
+        val recording = recordInfo.value
+        Log.d(TAG, "Recording size ${recording?.recording?.size} bytes")
+        if (view.isSelected && !isPlaying() && recording != null) {
+            view.findNavController().navigate(
+                MainFragmentDirections.actionRecordingPlaybackFragment(stream, recording, recorded)
+            )
+        }
+    }
+
     private fun onButtonSelected(view: View) {
         when (view.id) {
             R.id.button_primary_audio_play_pause -> {
@@ -103,7 +116,6 @@ class MainViewModel(
                         startRecord()
                 }
             }
-
             R.id.button_secondary_audio_play_pause -> startPlayback(view, ALT_AUDIO)
             else -> Unit
         }
@@ -119,7 +131,9 @@ class MainViewModel(
     }
 
     private fun startRecord() {
+        recorded = Calendar.getInstance().time
         recorder = Recorder(liveStreams.value?.get(0)!!)
+        Log.d(TAG, "$recorder")
         viewModelScope.async(Dispatchers.IO) { recorder?.record() }
         isRecording.value = true
         viewModelScope.launch {

@@ -3,12 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".ui.AltAudioSettingsFragment">
+    tools:context=".settings.AltAudioSettingsFragment">
 
     <data>
         <variable
             name="viewModel"
-            type="com.github.overtane.audiotester.ui.SettingsViewModel" />
+            type="com.github.overtane.audiotester.settings.SettingsViewModel" />
     </data>
 
     <ScrollView

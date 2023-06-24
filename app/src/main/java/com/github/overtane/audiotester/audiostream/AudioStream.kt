@@ -1,7 +1,6 @@
 package com.github.overtane.audiotester.audiostream
 
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.media.AudioAttributes
 import android.media.AudioFormat
@@ -29,12 +28,18 @@ data class AudioStream(
             AudioType.TELEPHONY -> AudioDirection.FULL_DUPLEX
         }
 
-    val channelMask: Int
+    val playbackChannelMask: Int
         get() = when (channelCount) {
             1 -> AudioFormat.CHANNEL_OUT_MONO
             2 -> AudioFormat.CHANNEL_OUT_STEREO
             else -> AudioFormat.CHANNEL_INVALID
         }
+
+    private val recordChannelMask: Int
+        get() = when (channelCount) {
+            1 -> AudioFormat.CHANNEL_IN_MONO
+            2 -> AudioFormat.CHANNEL_IN_STEREO
+            else -> AudioFormat.CHANNEL_INVALID }
 
     private val usage: Int
         get() = when (type) {
@@ -68,11 +73,11 @@ data class AudioStream(
                 AudioFormat.Builder()
                     .setEncoding(SAMPLE_FORMAT)
                     .setSampleRate(sampleRate)
-                    .setChannelMask(channelMask)
+                    .setChannelMask(playbackChannelMask)
                     .build()
             )
             .setBufferSizeInBytes(
-                AudioTrack.getMinBufferSize(sampleRate, channelMask, SAMPLE_FORMAT)
+                AudioTrack.getMinBufferSize(sampleRate, playbackChannelMask, SAMPLE_FORMAT)
             )
             .setPerformanceMode(PERFORMANCE_MODE)
             .setTransferMode(TRANSFER_MODE)
@@ -87,11 +92,11 @@ data class AudioStream(
                 AudioFormat.Builder()
                     .setEncoding(SAMPLE_FORMAT)
                     .setSampleRate(sampleRate)
-                    .setChannelMask(channelMask)
+                    .setChannelMask(recordChannelMask)
                     .build()
             )
             .setBufferSizeInBytes(
-                AudioRecord.getMinBufferSize(sampleRate, channelMask, SAMPLE_FORMAT)
+                AudioRecord.getMinBufferSize(sampleRate, recordChannelMask, SAMPLE_FORMAT)
             )
             .build()
 

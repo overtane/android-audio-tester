@@ -68,16 +68,19 @@ sealed class AudioSource(open val durationMs: Int) : Parcelable {
     }
 
     @Parcelize
-    class SpeechSample() : AudioSource(0) {
-        override fun nextSamples(size: Int): ShortArray {
-            return ShortArray(0)
-        }
-    }
+    class AudioBuffer(
+        override val durationMs: Int,
+        private val samples: ShortArray
+    ) : AudioSource(0) {
+        @IgnoredOnParcel
+        private var cursor: Int = 0
+        fun reset() { cursor = 0 }
 
-    @Parcelize
-    class AudioSample() : AudioSource(0) {
         override fun nextSamples(size: Int): ShortArray {
-            return ShortArray(0)
+            val len = if (cursor+size > samples.size) samples.size - cursor else size
+            val subarray = samples.copyOfRange(cursor, cursor+len)
+            cursor += size
+            return subarray
         }
     }
 }

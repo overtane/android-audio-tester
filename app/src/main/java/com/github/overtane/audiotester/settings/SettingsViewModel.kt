@@ -1,15 +1,16 @@
-package com.github.overtane.audiotester.ui
+package com.github.overtane.audiotester.settings
 
 import android.view.View
 import android.widget.SeekBar
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import com.github.overtane.audiotester.R
 import com.github.overtane.audiotester.audiostream.AudioSource
 import com.github.overtane.audiotester.audiostream.AudioStream
 import com.github.overtane.audiotester.audiostream.AudioType
 
-class SettingsViewModel : ViewModel() {
+class SettingsViewModel(val audioStream: AudioStream) : ViewModel() {
 
     enum class UiAudioSource {
         SINE_WAVE,
@@ -18,7 +19,7 @@ class SettingsViewModel : ViewModel() {
         NOTHING
     }
 
-    private lateinit var audioType: AudioType
+    private var audioType: AudioType
     private var sampleRate: Int = 0
     private var channelCount: Int = 0
 
@@ -34,14 +35,14 @@ class SettingsViewModel : ViewModel() {
     val frequency
         get() = _frequency
 
-    fun fragmentArgument(arg: AudioStream) {
-        audioType = arg.type
-        sampleRate = arg.sampleRate
-        channelCount = arg.channelCount
-        _source.value = arg.source.asUiAudioSource()
-        _duration.value = arg.source.durationMs.div(1000)
-        _frequency.value = when (arg.source) {
-            is AudioSource.SineWave -> arg.source.freqHz
+    init {
+        audioType = audioStream.type
+        sampleRate = audioStream.sampleRate
+        channelCount = audioStream.channelCount
+        _source.value = audioStream.source.asUiAudioSource()
+        _duration.value = audioStream.source.durationMs.div(1000)
+        _frequency.value = when (audioStream.source) {
+            is AudioSource.SineWave -> audioStream.source.freqHz
             else -> 200
         }
     }
@@ -121,5 +122,18 @@ class SettingsViewModel : ViewModel() {
         else -> UiAudioSource.NOTHING
     }
 
+}
+
+class SettingsViewModelFactory(
+    private val audioStream: AudioStream
+) : ViewModelProvider.Factory {
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
+            @Suppress("unchecked_cast")
+            return SettingsViewModel(audioStream) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
+    }
 }
 
