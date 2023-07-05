@@ -198,6 +198,14 @@
                         android:text="Silence"
                         android:layout_weight="1"/>
 
+                    <RadioButton
+                        android:id="@+id/radio_button_audio_file"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="File"
+                        android:layout_weight="1"/>
+
                 </RadioGroup>
 
                 <TextView

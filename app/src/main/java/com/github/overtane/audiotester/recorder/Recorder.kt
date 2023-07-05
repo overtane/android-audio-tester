@@ -1,6 +1,5 @@
 package com.github.overtane.audiotester.recorder
 
-import android.media.AudioFormat
 import android.media.AudioRecord
 import android.util.Log
 import com.github.overtane.audiotester.TAG

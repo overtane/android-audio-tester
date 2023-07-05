@@ -11,7 +11,6 @@ import com.github.overtane.audiotester.R
 import com.github.overtane.audiotester.audiostream.AudioStream
 import com.github.overtane.audiotester.databinding.FragmentRecordingPlaybackBinding
 import com.github.overtane.audiotester.recorder.RecordStat
-import java.util.Calendar
 import java.util.Date
 
 class RecordingPlaybackFragment : Fragment() {

@@ -11,14 +11,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.github.overtane.audiotester.R
+import com.github.overtane.audiotester.databinding.FragmentAudioDeviceListBinding
 
 class AudioDeviceListFragment : Fragment() {
 
+    private lateinit var binding: FragmentAudioDeviceListBinding
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val view = inflater.inflate(R.layout.fragment_audio_device_list, container, false)
+        binding = FragmentAudioDeviceListBinding.inflate(layoutInflater)
+        val view = binding.root
 
         if (view is RecyclerView) {
             with(view) {

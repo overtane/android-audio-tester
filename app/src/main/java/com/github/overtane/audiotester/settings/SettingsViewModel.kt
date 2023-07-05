@@ -16,6 +16,7 @@ class SettingsViewModel(val audioStream: AudioStream) : ViewModel() {
         SINE_WAVE,
         WHITE_NOISE,
         SILENCE,
+        FILE,
         NOTHING
     }
 
@@ -59,7 +60,7 @@ class SettingsViewModel(val audioStream: AudioStream) : ViewModel() {
             )
             UiAudioSource.SILENCE -> AudioSource.Silence(durationMs)
             UiAudioSource.WHITE_NOISE -> AudioSource.WhiteNoise(durationMs)
-            UiAudioSource.NOTHING -> AudioSource.Nothing
+            else -> AudioSource.Nothing
         }
         return AudioStream(audioType, sampleRate, channelCount, audioSource)
     }
