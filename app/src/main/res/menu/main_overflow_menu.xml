@@ -7,6 +7,9 @@
         android:id="@+id/instructionsFragment"
         android:title="Instructions" />
     <item
+        android:id="@+id/soundBrowser"
+        android:title="Sound Browser" />
+    <item
         android:id="@+id/aboutFragment"
         android:title="About" />
 </menu>

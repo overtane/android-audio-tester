@@ -18,40 +18,45 @@ import com.github.overtane.audiotester.ui.MainFragment
 
 class AltAudioSettingsFragment : Fragment() {
 
-    private lateinit var viewModel: SettingsViewModel
+    private lateinit var myViewModel: SettingsViewModel
     private lateinit var binding: FragmentAltAudioSettingsBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentAltAudioSettingsBinding.inflate(inflater)
-        binding.lifecycleOwner = viewLifecycleOwner
         val audioStream = MainAudioSettingsFragmentArgs.fromBundle(requireArguments()).audioStream
-        viewModel = ViewModelProvider(
+        myViewModel = ViewModelProvider(
             this,
             SettingsViewModelFactory(audioStream)
         )[SettingsViewModel::class.java]
-        binding.viewModel = viewModel
 
-        binding.okButton.setOnClickListener {
-            setFragmentResult(
-                MainFragment.ALT_REQUEST_KEY,
-                bundleOf(MainFragment.AUDIO_STREAM_BUNDLE_KEY to viewModel.fragmentResult())
-            )
-            NavHostFragment.findNavController(this).navigateUp()
+        binding = FragmentAltAudioSettingsBinding.inflate(inflater).apply {
+            viewModel = myViewModel
+            lifecycleOwner = viewLifecycleOwner
+
+            okButton.setOnClickListener {
+                setFragmentResult(
+                    MainFragment.ALT_REQUEST_KEY,
+                    bundleOf(MainFragment.AUDIO_STREAM_BUNDLE_KEY to myViewModel.fragmentResult())
+                )
+                NavHostFragment.findNavController(this@AltAudioSettingsFragment).navigateUp()
+            }
         }
 
-        viewModel.source.observe(viewLifecycleOwner) { source -> source.checkAttributeVisibility() }
+        myViewModel.source.observe(viewLifecycleOwner) { source -> source.checkAttributeVisibility() }
         initializeFragmentValues(audioStream)
+
         return binding.root
     }
 
     private fun initializeFragmentValues(audioStream: AudioStream) {
         audioStream.let {
-            binding.radioGroupSampleRate.check(it.sampleRate.checkId())
-            binding.radioGroupChannelCount.check(it.playbackChannelMask.checkId())
-            binding.radioGroupAudioSource.check(it.source.checkId())
+            binding.apply {
+                radioGroupSampleRate.check(it.sampleRate.checkId())
+                radioGroupChannelCount.check(it.playbackChannelMask.checkId())
+                radioGroupAudioSource.check(it.source.checkId())
+            }
         }
     }
 
@@ -75,8 +80,10 @@ class AltAudioSettingsFragment : Fragment() {
             true -> View.VISIBLE
             false -> View.INVISIBLE
         }
-        binding.sliderFrequency.visibility = visible
-        binding.textFrequencyValue.visibility = visible
+        binding.apply {
+            sliderFrequency.visibility = visible
+            textFrequencyValue.visibility = visible
+        }
     }
 
 }

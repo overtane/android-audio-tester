@@ -15,14 +15,14 @@ import java.util.Date
 
 class RecordingPlaybackFragment : Fragment() {
 
-    private lateinit var viewModel: RecordingPlaybackViewModel
+    private lateinit var myViewModel: RecordingPlaybackViewModel
     private lateinit var binding: FragmentRecordingPlaybackBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = ViewModelProvider(
+        myViewModel = ViewModelProvider(
             this,
             RecordingPlaybackViewModelFactory(
                 RecordingPlaybackFragmentArgs.fromBundle(requireArguments()).audioStream,
@@ -31,11 +31,12 @@ class RecordingPlaybackFragment : Fragment() {
             )
         )[RecordingPlaybackViewModel::class.java]
 
-        binding = FragmentRecordingPlaybackBinding.inflate(inflater)
-        binding.lifecycleOwner = viewLifecycleOwner
-        binding.viewModel = viewModel
+        binding = FragmentRecordingPlaybackBinding.inflate(inflater).apply {
+            lifecycleOwner = viewLifecycleOwner
+            viewModel = myViewModel
+        }
 
-        viewModel.playState.observe(viewLifecycleOwner) { state ->
+        myViewModel.playState.observe(viewLifecycleOwner) { state ->
             when (state) {
                 RecordingPlaybackViewModel.PlayState.PLAYING ->
                     binding.playButton.text = getString(R.string.button_text_stop)

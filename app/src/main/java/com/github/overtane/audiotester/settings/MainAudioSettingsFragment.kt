@@ -20,43 +20,47 @@ import com.github.overtane.audiotester.ui.MainFragment
 
 class MainAudioSettingsFragment : Fragment() {
 
-    private lateinit var viewModel: SettingsViewModel
+    private lateinit var myViewModel: SettingsViewModel
     private lateinit var binding: FragmentMainAudioSettingsBinding
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentMainAudioSettingsBinding.inflate(inflater)
-        binding.lifecycleOwner = viewLifecycleOwner
         val audioStream = MainAudioSettingsFragmentArgs.fromBundle(requireArguments()).audioStream
-
-        viewModel = ViewModelProvider(
+        myViewModel = ViewModelProvider(
             this,
             SettingsViewModelFactory(audioStream)
         )[SettingsViewModel::class.java]
-        binding.viewModel = viewModel
 
-        binding.okButton.setOnClickListener {
-            setFragmentResult(
-                MainFragment.MAIN_REQUEST_KEY,
-                bundleOf(MainFragment.AUDIO_STREAM_BUNDLE_KEY to viewModel.fragmentResult())
-            )
-            findNavController(this).navigateUp()
+        binding = FragmentMainAudioSettingsBinding.inflate(inflater).apply {
+            viewModel = myViewModel
+            lifecycleOwner = viewLifecycleOwner
+
+            okButton.setOnClickListener {
+                setFragmentResult(
+                    MainFragment.MAIN_REQUEST_KEY,
+                    bundleOf(MainFragment.AUDIO_STREAM_BUNDLE_KEY to viewModel?.fragmentResult())
+                )
+                findNavController(this@MainAudioSettingsFragment).navigateUp()
+            }
         }
 
-        viewModel.source.observe(viewLifecycleOwner) { source -> source.checkAttributeVisibility() }
+        myViewModel.source.observe(viewLifecycleOwner) { source -> source.checkAttributeVisibility() }
         initializeFragmentValues(audioStream)
+
         return binding.root
     }
 
 
     private fun initializeFragmentValues(audioStream: AudioStream) {
         audioStream.also {
-            binding.radioGroupAudioType.check(it.type.checkId())
-            binding.radioGroupSampleRate.check(it.sampleRate.checkId())
-            binding.radioGroupChannelCount.check(it.playbackChannelMask.checkId())
-            binding.radioGroupAudioSource.check(it.source.checkId())
+            binding.apply {
+                radioGroupAudioType.check(it.type.checkId())
+                radioGroupSampleRate.check(it.sampleRate.checkId())
+                radioGroupChannelCount.check(it.playbackChannelMask.checkId())
+                radioGroupAudioSource.check(it.source.checkId())
+            }
         }
     }
 
@@ -97,12 +101,14 @@ class MainAudioSettingsFragment : Fragment() {
             AudioType.SPEECH_RECOGNITION -> booleanArrayOf(false, false, true, false, false, false)
             AudioType.TELEPHONY -> booleanArrayOf(true, true, true, true, true, true)
         }
-        binding.radioButtonSampleRate8khz.isEnabled = selections[0]
-        binding.radioButtonSampleRate16khz.isEnabled = selections[1]
-        binding.radioButtonSampleRate24khz.isEnabled = selections[2]
-        binding.radioButtonSampleRate32khz.isEnabled = selections[3]
-        binding.radioButtonSampleRate441khz.isEnabled = selections[4]
-        binding.radioButtonSampleRate48khz.isEnabled = selections[5]
+        binding.apply {
+            radioButtonSampleRate8khz.isEnabled = selections[0]
+            radioButtonSampleRate16khz.isEnabled = selections[1]
+            radioButtonSampleRate24khz.isEnabled = selections[2]
+            radioButtonSampleRate32khz.isEnabled = selections[3]
+            radioButtonSampleRate441khz.isEnabled = selections[4]
+            radioButtonSampleRate48khz.isEnabled = selections[5]
+        }
     }
 
     private fun SettingsViewModel.UiAudioSource.checkAttributeVisibility() {
@@ -110,8 +116,10 @@ class MainAudioSettingsFragment : Fragment() {
             true -> View.VISIBLE
             false -> View.INVISIBLE
         }
-        binding.sliderFrequency.visibility = visible
-        binding.textFrequencyValue.visibility = visible
+        binding.apply {
+            sliderFrequency.visibility = visible
+            textFrequencyValue.visibility = visible
+        }
     }
 }
 

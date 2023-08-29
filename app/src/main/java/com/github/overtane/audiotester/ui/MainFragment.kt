@@ -1,10 +1,17 @@
 package com.github.overtane.audiotester.ui
 
 import android.animation.ObjectAnimator
+import android.app.PendingIntent
+import android.content.ActivityNotFoundException
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.animation.Animation
+import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.datastore.core.DataStore
@@ -25,7 +32,7 @@ import com.github.overtane.audiotester.datastore.UserPrefs
 class MainFragment : Fragment(), MenuProvider {
 
     private lateinit var binding: FragmentMainBinding
-    private lateinit var viewModel: MainViewModel
+    private lateinit var myViewModel: MainViewModel
 
     private var animator: ObjectAnimator? = null
 
@@ -33,14 +40,16 @@ class MainFragment : Fragment(), MenuProvider {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentMainBinding.inflate(inflater)
-        binding.lifecycleOwner = viewLifecycleOwner
-        viewModel = ViewModelProvider(
+        myViewModel = ViewModelProvider(
             this,
             MainViewModelFactory(PreferencesRepository(requireContext().dataStore))
         )[MainViewModel::class.java]
-        // bind ui-data to viewModel instance (left: xml-data, right: viewModel object)
-        binding.viewModel = viewModel
+
+        binding = FragmentMainBinding.inflate(inflater).apply {
+            lifecycleOwner = viewLifecycleOwner
+            // bind ui-data to viewModel instance (left: xml-data, right: viewModel object)
+            viewModel = myViewModel
+        }
 
         (requireActivity() as MenuHost).addMenuProvider(
             this,
@@ -48,11 +57,10 @@ class MainFragment : Fragment(), MenuProvider {
             Lifecycle.State.RESUMED
         )
 
-        viewModel.isRecording.observe(viewLifecycleOwner) { recording ->
-            if (recording) {
-                startMicAnimation()
-            } else {
-                stopMicAnimation()
+        myViewModel.isRecording.observe(viewLifecycleOwner) { recording ->
+            when (recording) {
+                true -> startMicAnimation()
+                false -> stopMicAnimation()
             }
         }
 
@@ -66,14 +74,14 @@ class MainFragment : Fragment(), MenuProvider {
         setFragmentResultListener(MAIN_REQUEST_KEY) { _, bundle ->
             val result = bundle.getParcelable<AudioStream>(AUDIO_STREAM_BUNDLE_KEY)
             result?.let {
-                viewModel.setMainAudio(it)
+                myViewModel.setMainAudio(it)
             }
         }
 
         setFragmentResultListener(ALT_REQUEST_KEY) { _, bundle ->
             val result = bundle.getParcelable<AudioStream>(AUDIO_STREAM_BUNDLE_KEY)
             result?.let {
-                viewModel.setAltAudio(it)
+                myViewModel.setAltAudio(it)
             }
         }
     }
@@ -81,8 +89,13 @@ class MainFragment : Fragment(), MenuProvider {
     override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) =
         menuInflater.inflate(R.menu.main_overflow_menu, menu)
 
-    override fun onMenuItemSelected(item: MenuItem) =
-        NavigationUI.onNavDestinationSelected(item, findNavController())
+    override fun onMenuItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.soundBrowser -> openSoundBrowserApp()
+            else -> NavigationUI.onNavDestinationSelected(item, findNavController())
+        }
+        return true
+    }
 
     private fun startMicAnimation() {
         val icon = binding.buttonPrimaryAudioRecording
@@ -103,7 +116,33 @@ class MainFragment : Fragment(), MenuProvider {
         animator = null
     }
 
+    private fun openSoundBrowserApp() = runCatching {
+        val intent = requireContext().packageManager.getLaunchIntentForPackage(SOUND_BROWSER)
+        intent?.apply {
+            putExtra(SOUND_REQUEST_KEY, pendingIntent())
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+            ContextCompat.startActivity(requireContext(), this, null)
+        } ?: throw ActivityNotFoundException()
+    }.onFailure {
+        Toast.makeText(requireContext(), SOUND_BROWSER_ERROR, Toast.LENGTH_SHORT).show()
+    }
+
+    private fun pendingIntent() = PendingIntent.getActivity(
+        context,
+        REQUEST_CODE,
+        Intent(Intent.ACTION_DEFAULT).apply {
+            component =
+                ComponentName.unflattenFromString(requireContext().packageName + "/.MainActivity")
+        },
+        PendingIntent.FLAG_MUTABLE
+    )
+
     companion object {
+        private const val REQUEST_CODE = 0x42
+        private const val SOUND_BROWSER = "org.github.overtane.soundbrowser"
+        private const val SOUND_REQUEST_KEY = "$SOUND_BROWSER.SOUND_REQUEST"
+        const val SOUND_REPLY_KEY = "$SOUND_BROWSER.SOUND_REPLY"
+
         const val MAIN_REQUEST_KEY = "MainAudioSettings"
         const val ALT_REQUEST_KEY = "AltAudioSettings"
         const val AUDIO_STREAM_BUNDLE_KEY = "AudioStream"
@@ -114,6 +153,8 @@ class MainFragment : Fragment(), MenuProvider {
             fileName = DATA_STORE_FILE_NAME,
             serializer = UserPrefsSerializer
         )
+
+        private const val SOUND_BROWSER_ERROR = "SoundBrowser not available"
     }
 }
 

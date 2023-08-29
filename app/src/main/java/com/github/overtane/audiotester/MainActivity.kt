@@ -11,6 +11,7 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.github.overtane.audiotester.ui.MainFragment
 
 class MainActivity : AppCompatActivity() {
 
@@ -32,6 +33,13 @@ class MainActivity : AppCompatActivity() {
             ActivityCompat.requestPermissions(
                 this, arrayOf(Manifest.permission.RECORD_AUDIO), PERMISSION_REQUEST_CODE
             )
+        }
+
+        intent?.extras?.let {
+            val bundle: Bundle? = it.getParcelable(MainFragment.SOUND_REPLY_KEY)
+            if (bundle != null) {
+                Log.d("MainFragment", "Got sound!")
+            }
         }
     }
 

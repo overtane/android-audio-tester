@@ -30,4 +30,12 @@
         </activity>
     </application>
 
+    <queries>
+        <package android:name="org.github.overtane.soundbrowser"/>
+        <intent>
+            <action android:name="android.intent.action.MAIN" />
+            <category android:name="android.intent.category.LAUNCHER" />
+        </intent>
+    </queries>
+
 </manifest>
