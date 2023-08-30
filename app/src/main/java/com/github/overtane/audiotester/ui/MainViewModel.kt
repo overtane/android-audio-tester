@@ -1,6 +1,7 @@
 package com.github.overtane.audiotester.ui
 
 
+import android.os.Bundle
 import android.util.Log
 import android.view.View
 import androidx.lifecycle.MutableLiveData
@@ -9,6 +10,11 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import androidx.navigation.findNavController
 import com.github.overtane.audiotester.R
+import com.github.overtane.audiotester.SOUND_EXTRA_CHANNELS
+import com.github.overtane.audiotester.SOUND_EXTRA_DURATION
+import com.github.overtane.audiotester.SOUND_EXTRA_NAME
+import com.github.overtane.audiotester.SOUND_EXTRA_SAMPLE_RATE
+import com.github.overtane.audiotester.SOUND_EXTRA_URL
 import com.github.overtane.audiotester.TAG
 import com.github.overtane.audiotester.audiostream.AudioDirection
 import com.github.overtane.audiotester.audiostream.AudioStream
@@ -84,6 +90,21 @@ class MainViewModel(
                 view.findNavController()
                     .navigate(MainFragmentDirections.actionAltAudioSettings(it))
             }
+        }
+    }
+
+    fun setSound(bundle: Bundle?) {
+        bundle?.let {
+            val name = bundle.getString(SOUND_EXTRA_NAME)
+            val url = bundle.getString(SOUND_EXTRA_URL)
+            val duration = bundle.getInt(SOUND_EXTRA_DURATION)
+            val sampleRate = bundle.getInt(SOUND_EXTRA_SAMPLE_RATE)
+            val channels = bundle.getInt(SOUND_EXTRA_CHANNELS)
+            Log.d("MainFragment", "$SOUND_EXTRA_NAME == $name")
+            Log.d("MainFragment", "$SOUND_EXTRA_URL == $url")
+            Log.d("MainFragment", "$SOUND_EXTRA_DURATION == $duration")
+            Log.d("MainFragment", "$SOUND_EXTRA_SAMPLE_RATE == $sampleRate")
+            Log.d("MainFragment", "$SOUND_EXTRA_CHANNELS == $channels")
         }
     }
 

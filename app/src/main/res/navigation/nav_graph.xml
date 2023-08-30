@@ -11,6 +11,11 @@
         android:name="com.github.overtane.audiotester.ui.MainFragment"
         android:label="@string/app_name"
         tools:layout="@layout/fragment_main" >
+        <argument
+            android:name="sound"
+            android:defaultValue="@null"
+            app:argType="android.os.Bundle"
+            app:nullable="true"/>
         <action
             android:id="@+id/action_mainAudioSettings"
             app:destination="@id/mainAudioSettingsFragment" />

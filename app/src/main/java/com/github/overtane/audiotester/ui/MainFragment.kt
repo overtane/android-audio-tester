@@ -7,7 +7,6 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import android.widget.Toast
@@ -23,6 +22,9 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.github.overtane.audiotester.R
+import com.github.overtane.audiotester.SOUND_BROWSER_PACKAGE
+import com.github.overtane.audiotester.SOUND_REQUEST_CODE
+import com.github.overtane.audiotester.SOUND_REQUEST_KEY
 import com.github.overtane.audiotester.audiostream.AudioStream
 import com.github.overtane.audiotester.databinding.FragmentMainBinding
 import com.github.overtane.audiotester.datastore.UserPrefsSerializer
@@ -57,11 +59,14 @@ class MainFragment : Fragment(), MenuProvider {
             Lifecycle.State.RESUMED
         )
 
-        myViewModel.isRecording.observe(viewLifecycleOwner) { recording ->
-            when (recording) {
-                true -> startMicAnimation()
-                false -> stopMicAnimation()
+        myViewModel.apply {
+            isRecording.observe(viewLifecycleOwner) { recording ->
+                when (recording) {
+                    true -> startMicAnimation()
+                    false -> stopMicAnimation()
+                }
             }
+            setSound(MainFragmentArgs.fromBundle(requireArguments()).sound)
         }
 
         return binding.root
@@ -117,7 +122,8 @@ class MainFragment : Fragment(), MenuProvider {
     }
 
     private fun openSoundBrowserApp() = runCatching {
-        val intent = requireContext().packageManager.getLaunchIntentForPackage(SOUND_BROWSER)
+        val intent =
+            requireContext().packageManager.getLaunchIntentForPackage(SOUND_BROWSER_PACKAGE)
         intent?.apply {
             putExtra(SOUND_REQUEST_KEY, pendingIntent())
             flags = Intent.FLAG_ACTIVITY_NEW_TASK
@@ -129,7 +135,7 @@ class MainFragment : Fragment(), MenuProvider {
 
     private fun pendingIntent() = PendingIntent.getActivity(
         context,
-        REQUEST_CODE,
+        SOUND_REQUEST_CODE,
         Intent(Intent.ACTION_DEFAULT).apply {
             component =
                 ComponentName.unflattenFromString(requireContext().packageName + "/.MainActivity")
@@ -138,11 +144,6 @@ class MainFragment : Fragment(), MenuProvider {
     )
 
     companion object {
-        private const val REQUEST_CODE = 0x42
-        private const val SOUND_BROWSER = "org.github.overtane.soundbrowser"
-        private const val SOUND_REQUEST_KEY = "$SOUND_BROWSER.SOUND_REQUEST"
-        const val SOUND_REPLY_KEY = "$SOUND_BROWSER.SOUND_REPLY"
-
         const val MAIN_REQUEST_KEY = "MainAudioSettings"
         const val ALT_REQUEST_KEY = "AltAudioSettings"
         const val AUDIO_STREAM_BUNDLE_KEY = "AudioStream"

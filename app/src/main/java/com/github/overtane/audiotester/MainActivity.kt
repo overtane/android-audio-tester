@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
@@ -20,9 +21,6 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        navController = findNavController(R.id.nav_host_fragment)
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
-        setupActionBarWithNavController(navController, appBarConfiguration)
 
         // Check and request the necessary permissions
         if (ContextCompat.checkSelfPermission(
@@ -35,11 +33,10 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        intent?.extras?.let {
-            val bundle: Bundle? = it.getParcelable(MainFragment.SOUND_REPLY_KEY)
-            if (bundle != null) {
-                Log.d("MainFragment", "Got sound!")
-            }
+        navController = findNavController(R.id.nav_host_fragment).apply {
+            val sound: Bundle? = intent?.extras?.getParcelable(SOUND_REPLY_KEY)
+            setGraph(R.navigation.nav_graph, bundleOf("sound" to sound))
+            setupActionBarWithNavController(this, AppBarConfiguration(this.graph))
         }
     }
 
