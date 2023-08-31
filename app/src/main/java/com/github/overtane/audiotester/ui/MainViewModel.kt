@@ -4,6 +4,7 @@ package com.github.overtane.audiotester.ui
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -120,7 +121,7 @@ class MainViewModel(
         }
     }
 
-    fun onMicButtonClicked(view: View) {
+    fun onMicButtonClicked(view: View): Boolean {
         val stream = liveStreams.value?.get(MAIN_AUDIO)!!
         val recording = recordInfo.value
         Log.d(TAG, "Recording size ${recording?.recording?.size} bytes")
@@ -128,7 +129,10 @@ class MainViewModel(
             view.findNavController().navigate(
                 MainFragmentDirections.actionRecordingPlaybackFragment(stream, recording, recorded)
             )
+            return true
         }
+        if (!view.isSelected || isPlaying()) return true
+        return false
     }
 
     private fun onButtonSelected(view: View) {

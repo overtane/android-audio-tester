@@ -51,6 +51,12 @@ class MainFragment : Fragment(), MenuProvider {
             lifecycleOwner = viewLifecycleOwner
             // bind ui-data to viewModel instance (left: xml-data, right: viewModel object)
             viewModel = myViewModel
+
+            buttonPrimaryAudioRecording.setOnClickListener {
+                if (!myViewModel.onMicButtonClicked(it)) {
+                    Toast.makeText(context, "No recording", Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         (requireActivity() as MenuHost).addMenuProvider(

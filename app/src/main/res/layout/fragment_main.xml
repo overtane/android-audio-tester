@@ -120,7 +120,6 @@
                         android:clickable="false"
                         android:enabled="false"
                         android:backgroundTint="?attr/colorOnPrimary"
-                        android:onClick="@{(view) -> viewModel.onMicButtonClicked(view)}"
                         app:microphoneState="@{viewModel.liveStreams[0]}"
                         app:srcCompat="@drawable/selector_ic_vector_mic"
                         app:tint="?attr/colorPrimary" />
