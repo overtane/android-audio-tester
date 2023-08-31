@@ -26,8 +26,10 @@ sealed class AudioSource(open val durationMs: Int) : Parcelable {
     ) : AudioSource(durationMs) {
         @IgnoredOnParcel
         private val amplitude = AMPLITUDE * Short.MAX_VALUE
+
         @IgnoredOnParcel
         private val angularFreq = 2 * PI * freqHz / sampleRate.toDouble()
+
         @IgnoredOnParcel
         private var start: Int = 0 // start phase
 
@@ -74,13 +76,25 @@ sealed class AudioSource(open val durationMs: Int) : Parcelable {
     ) : AudioSource(0) {
         @IgnoredOnParcel
         private var cursor: Int = 0
-        fun reset() { cursor = 0 }
+        fun reset() {
+            cursor = 0
+        }
 
         override fun nextSamples(size: Int): ShortArray {
-            val len = if (cursor+size > samples.size) samples.size - cursor else size
-            val subarray = samples.copyOfRange(cursor, cursor+len)
+            val len = if (cursor + size > samples.size) samples.size - cursor else size
+            val subarray = samples.copyOfRange(cursor, cursor + len)
             cursor += size
             return subarray
+        }
+    }
+
+    @Parcelize
+    class Sound(val name: String, val url: String, override val durationMs: Int) :
+        AudioSource(durationMs) {
+        override fun nextSamples(size: Int) = ShortArray(size) { 0 }
+
+        override fun toString(): String {
+            return "Sound ${durationMs.div(1000)} s, $name"
         }
     }
 }

@@ -17,15 +17,18 @@ class PreferencesRepository(
         val prefs = runBlocking { getPrefs() }
         return if (prefs.main.sampleRate == 0) {
             // Initial values
-            mutableListOf(INIT_MAIN_STREAM, INIT_ALT_STREAM)
+            mutableListOf(INIT_MAIN_STREAM, INIT_ALT_STREAM, INIT_EXT_STREAM)
         } else {
-            mutableListOf(prefs.main.asAudioStream(), prefs.alt.asAudioStream())
+            mutableListOf(
+                prefs.main.asAudioStream(),
+                prefs.alt.asAudioStream(),
+                prefs.ext.asAudioStream()
+            )
         }
     }
 
     fun set(streams: MutableList<AudioStream>) {
-        // TODO Check that both exist
-        runBlocking { setPrefs(streams[0], streams[1]) }
+        runBlocking { setPrefs(streams) }
     }
 
     private fun PrefsAudioStream.asAudioStream(): AudioStream {
@@ -45,7 +48,10 @@ class PreferencesRepository(
         }
     }
 
-    private suspend fun setPrefs(mainStream: AudioStream, altStream: AudioStream) {
+    private suspend fun setPrefs(streams: MutableList<AudioStream>) {
+        val mainStream = if (streams.size > 0) streams[0] else INIT_MAIN_STREAM
+        val altStream = if (streams.size > 1) streams[1] else INIT_ALT_STREAM
+        val extStream = if (streams.size > 2) streams[2] else INIT_EXT_STREAM
         dataStore.updateData { prefs ->
             prefs.toBuilder()
                 .setMain(
@@ -72,6 +78,21 @@ class PreferencesRepository(
                                 .setType(altStream.source.asAudioSourceType())
                                 .setDuration(altStream.source.durationMs)
                                 .setFrequency(altStream.source.frequency())
+                                .build()
+                        )
+                        .build()
+                )
+                .setExt(
+                    prefs.ext.toBuilder()
+                        .setType(PrefsAudioType.ENTERTAINMENT)
+                        .setSampleRate(extStream.sampleRate)
+                        .setChannelCount(altStream.channelCount)
+                        .setSource(
+                            prefs.ext.source.toBuilder()
+                                .setType(UserPrefs.AudioSourceType.URL)
+                                .setDuration(extStream.source.durationMs)
+                                .setName((extStream.source as? AudioSource.Sound)?.name)
+                                .setUrl((extStream.source as? AudioSource.Sound)?.url)
                                 .build()
                         )
                         .build()
@@ -110,14 +131,22 @@ class PreferencesRepository(
                     channelCount,
                     source.duration
                 )
+
             UserPrefs.AudioSourceType.WHITE_NOISE -> AudioSource.WhiteNoise(source.duration)
-            else -> AudioSource.Silence(source.duration)
+            UserPrefs.AudioSourceType.SILENCE -> AudioSource.Silence(source.duration)
+            UserPrefs.AudioSourceType.URL -> AudioSource.Sound(
+                source.name,
+                source.url,
+                source.duration
+            )
+            else -> AudioSource.Nothing
         }
 
     private fun AudioSource.asAudioSourceType() = when (this) {
         is AudioSource.SineWave -> UserPrefs.AudioSourceType.SINE_WAVE
         is AudioSource.WhiteNoise -> UserPrefs.AudioSourceType.WHITE_NOISE
         is AudioSource.Silence -> UserPrefs.AudioSourceType.SILENCE
+        is AudioSource.Sound -> UserPrefs.AudioSourceType.URL
         else -> UserPrefs.AudioSourceType.UNRECOGNIZED
     }
 
@@ -130,33 +159,36 @@ class PreferencesRepository(
         private const val INIT_ALT_SAMPLE_RATE = 48000
         private const val INIT_MAIN_CHANNEL_COUNT = 2
         private const val INIT_ALT_CHANNEL_COUNT = 1
-        private val INIT_MAIN_SOURCE =
-            AudioSource.SineWave(
-                800,
-                INIT_ALT_SAMPLE_RATE,
-                INIT_ALT_CHANNEL_COUNT,
-                INIT_DURATION_MS
-            )
-        private val INIT_ALT_SOURCE =
-            AudioSource.SineWave(
-                800,
-                INIT_ALT_SAMPLE_RATE,
-                INIT_ALT_CHANNEL_COUNT,
-                INIT_DURATION_MS
-            )
         private val INIT_MAIN_STREAM =
             AudioStream(
                 AudioType.ENTERTAINMENT,
                 INIT_MAIN_SAMPLE_RATE,
                 INIT_MAIN_CHANNEL_COUNT,
-                INIT_MAIN_SOURCE
+                AudioSource.SineWave(
+                    800,
+                    INIT_ALT_SAMPLE_RATE,
+                    INIT_ALT_CHANNEL_COUNT,
+                    INIT_DURATION_MS
+                )
             )
         private val INIT_ALT_STREAM =
             AudioStream(
                 AudioType.ALTERNATE,
                 INIT_ALT_SAMPLE_RATE,
                 INIT_ALT_CHANNEL_COUNT,
-                INIT_ALT_SOURCE,
+                AudioSource.SineWave(
+                    800,
+                    INIT_ALT_SAMPLE_RATE,
+                    INIT_ALT_CHANNEL_COUNT,
+                    INIT_DURATION_MS
+                )
+            )
+        private val INIT_EXT_STREAM =
+            AudioStream(
+                AudioType.ENTERTAINMENT,
+                44100,
+                2,
+                AudioSource.Sound(name = "", url = "", durationMs = 0),
             )
     }
 }

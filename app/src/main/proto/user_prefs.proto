@@ -17,12 +17,15 @@ message UserPrefs {
         SINE_WAVE = 0;
         WHITE_NOISE = 1;
         SILENCE = 2;
+        URL = 3;
     }
 
     message AudioSource {
         AudioSourceType type = 1;
         int32 duration = 2;
-        int32 frequency = 3;
+        optional int32 frequency = 3; // for SINE_WAVE type
+        optional string url = 4; // for URL type
+        optional string name = 5; // for URL type
     }
 
     message AudioStream {
@@ -34,4 +37,5 @@ message UserPrefs {
 
     AudioStream main = 1;
     AudioStream alt = 2;
+    optional AudioStream ext = 3; // selected sound details if any
 }

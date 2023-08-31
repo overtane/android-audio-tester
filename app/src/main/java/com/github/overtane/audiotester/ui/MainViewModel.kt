@@ -100,11 +100,15 @@ class MainViewModel(
             val duration = bundle.getInt(SOUND_EXTRA_DURATION)
             val sampleRate = bundle.getInt(SOUND_EXTRA_SAMPLE_RATE)
             val channels = bundle.getInt(SOUND_EXTRA_CHANNELS)
-            Log.d("MainFragment", "$SOUND_EXTRA_NAME == $name")
-            Log.d("MainFragment", "$SOUND_EXTRA_URL == $url")
-            Log.d("MainFragment", "$SOUND_EXTRA_DURATION == $duration")
-            Log.d("MainFragment", "$SOUND_EXTRA_SAMPLE_RATE == $sampleRate")
-            Log.d("MainFragment", "$SOUND_EXTRA_CHANNELS == $channels")
+            Log.d(TAG, "$SOUND_EXTRA_NAME == $name")
+            Log.d(TAG, "$SOUND_EXTRA_URL == $url")
+            Log.d(TAG, "$SOUND_EXTRA_DURATION == $duration")
+            Log.d(TAG, "$SOUND_EXTRA_SAMPLE_RATE == $sampleRate")
+            Log.d(TAG, "$SOUND_EXTRA_CHANNELS == $channels")
+            // Store sound to preferences
+            // preferencesRepository.setSound()
+            // Use sound in main audio
+            // setMainAudio()
         }
     }
 
