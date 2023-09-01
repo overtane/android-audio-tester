@@ -16,7 +16,6 @@ class PreferencesRepository(
     fun get(): MutableList<AudioStream> {
         val prefs = runBlocking { getPrefs() }
         return if (prefs.main.sampleRate == 0) {
-            // Initial values
             mutableListOf(INIT_MAIN_STREAM, INIT_ALT_STREAM, INIT_EXT_STREAM)
         } else {
             mutableListOf(
@@ -64,6 +63,8 @@ class PreferencesRepository(
                                 .setType(mainStream.source.asAudioSourceType())
                                 .setDuration(mainStream.source.durationMs)
                                 .setFrequency(mainStream.source.frequency())
+                                .setName(mainStream.source.name())
+                                .setUrl(mainStream.source.url())
                                 .build()
                         )
                         .build()
@@ -139,6 +140,7 @@ class PreferencesRepository(
                 source.url,
                 source.duration
             )
+
             else -> AudioSource.Nothing
         }
 
@@ -151,6 +153,8 @@ class PreferencesRepository(
     }
 
     private fun AudioSource.frequency() = if (this is AudioSource.SineWave) this.freqHz else 0
+    private fun AudioSource.name() = if (this is AudioSource.Sound) this.name else ""
+    private fun AudioSource.url() = if (this is AudioSource.Sound) this.url else ""
 
     companion object {
         // Initial stream settings for the first time read
@@ -185,10 +189,10 @@ class PreferencesRepository(
             )
         private val INIT_EXT_STREAM =
             AudioStream(
-                AudioType.ENTERTAINMENT,
-                44100,
-                2,
-                AudioSource.Sound(name = "", url = "", durationMs = 0),
+                type = AudioType.ENTERTAINMENT,
+                sampleRate = 0,
+                channelCount = 0,
+                source = AudioSource.Sound(name = "", url = "", durationMs = 0),
             )
     }
 }

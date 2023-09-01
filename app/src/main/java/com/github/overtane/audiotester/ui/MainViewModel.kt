@@ -4,7 +4,6 @@ package com.github.overtane.audiotester.ui
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -18,7 +17,9 @@ import com.github.overtane.audiotester.SOUND_EXTRA_SAMPLE_RATE
 import com.github.overtane.audiotester.SOUND_EXTRA_URL
 import com.github.overtane.audiotester.TAG
 import com.github.overtane.audiotester.audiostream.AudioDirection
+import com.github.overtane.audiotester.audiostream.AudioSource
 import com.github.overtane.audiotester.audiostream.AudioStream
+import com.github.overtane.audiotester.audiostream.AudioType
 import com.github.overtane.audiotester.datastore.PreferencesRepository
 import com.github.overtane.audiotester.player.Player
 import com.github.overtane.audiotester.player.PlaybackStat
@@ -96,20 +97,25 @@ class MainViewModel(
 
     fun setSound(bundle: Bundle?) {
         bundle?.let {
-            val name = bundle.getString(SOUND_EXTRA_NAME)
-            val url = bundle.getString(SOUND_EXTRA_URL)
-            val duration = bundle.getInt(SOUND_EXTRA_DURATION)
-            val sampleRate = bundle.getInt(SOUND_EXTRA_SAMPLE_RATE)
-            val channels = bundle.getInt(SOUND_EXTRA_CHANNELS)
-            Log.d(TAG, "$SOUND_EXTRA_NAME == $name")
-            Log.d(TAG, "$SOUND_EXTRA_URL == $url")
-            Log.d(TAG, "$SOUND_EXTRA_DURATION == $duration")
-            Log.d(TAG, "$SOUND_EXTRA_SAMPLE_RATE == $sampleRate")
-            Log.d(TAG, "$SOUND_EXTRA_CHANNELS == $channels")
-            // Store sound to preferences
-            // preferencesRepository.setSound()
-            // Use sound in main audio
-            // setMainAudio()
+            val stream = AudioStream(
+                type = AudioType.ENTERTAINMENT,
+                sampleRate = bundle.getInt(SOUND_EXTRA_SAMPLE_RATE),
+                channelCount = bundle.getInt(SOUND_EXTRA_CHANNELS),
+                source = AudioSource.Sound(
+                    name = bundle.getString(SOUND_EXTRA_NAME) ?: "",
+                    url = bundle.getString(SOUND_EXTRA_URL) ?: "",
+                    durationMs = bundle.getInt(SOUND_EXTRA_DURATION) * 1000
+                )
+            )
+
+            Log.d(TAG, "$SOUND_EXTRA_NAME == ${(stream.source as AudioSource.Sound).name}")
+            Log.d(TAG, "$SOUND_EXTRA_URL == ${stream.source.url}")
+            Log.d(TAG, "$SOUND_EXTRA_DURATION == ${stream.source.durationMs}")
+            Log.d(TAG, "$SOUND_EXTRA_SAMPLE_RATE == ${stream.sampleRate}")
+            Log.d(TAG, "$SOUND_EXTRA_CHANNELS == ${stream.channelCount}")
+
+            _liveStreams.value?.set(EXT_AUDIO, stream)
+            setMainAudio(stream)
         }
     }
 
@@ -145,6 +151,7 @@ class MainViewModel(
                         startRecord()
                 }
             }
+
             R.id.button_secondary_audio_play_pause -> startPlayback(view, ALT_AUDIO)
             else -> Unit
         }
@@ -184,6 +191,7 @@ class MainViewModel(
                 stopPlayback(view, MAIN_AUDIO)
                 stopRecord()
             }
+
             R.id.button_secondary_audio_play_pause -> stopPlayback(view, ALT_AUDIO)
             else -> Unit
         }
@@ -203,11 +211,12 @@ class MainViewModel(
     private fun isPlaying() =
         player[MAIN_AUDIO].isPlaying() || player[ALT_AUDIO].isPlaying() || isRecording()
 
-    private fun isRecording() =  recorder?.isRecording() ?: false
+    private fun isRecording() = recorder?.isRecording() ?: false
 
     companion object {
         const val MAIN_AUDIO = 0
         const val ALT_AUDIO = 1
+        const val EXT_AUDIO = 2
     }
 }
 
