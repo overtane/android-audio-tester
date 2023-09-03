@@ -87,7 +87,7 @@ class PreferencesRepository(
                     prefs.ext.toBuilder()
                         .setType(PrefsAudioType.ENTERTAINMENT)
                         .setSampleRate(extStream.sampleRate)
-                        .setChannelCount(altStream.channelCount)
+                        .setChannelCount(extStream.channelCount)
                         .setSource(
                             prefs.ext.source.toBuilder()
                                 .setType(UserPrefs.AudioSourceType.URL)

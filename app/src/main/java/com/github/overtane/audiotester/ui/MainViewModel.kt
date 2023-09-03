@@ -20,6 +20,7 @@ import com.github.overtane.audiotester.audiostream.AudioDirection
 import com.github.overtane.audiotester.audiostream.AudioSource
 import com.github.overtane.audiotester.audiostream.AudioStream
 import com.github.overtane.audiotester.audiostream.AudioType
+import com.github.overtane.audiotester.datastore.Downloader
 import com.github.overtane.audiotester.datastore.PreferencesRepository
 import com.github.overtane.audiotester.player.Player
 import com.github.overtane.audiotester.player.PlaybackStat
@@ -32,7 +33,8 @@ import java.util.Calendar
 import java.util.Date
 
 class MainViewModel(
-    private val preferencesRepository: PreferencesRepository
+    private val preferencesRepository: PreferencesRepository,
+    private val downloader: Downloader
 ) : ViewModel() {
 
     private var _liveStreams = MutableLiveData<MutableList<AudioStream>>()
@@ -56,12 +58,15 @@ class MainViewModel(
     var isRecording = MutableLiveData<Boolean>()
     private var recorded: Date = Calendar.getInstance().time
 
+    private var downloadId: Long = 0 // ongoing download
+
     init {
         val prefs = preferencesRepository.get()
         _liveStreams.value = prefs
         preferencesRepository.set(prefs)
         player = mutableListOf(Player(prefs[0]), Player(prefs[1]))
         isRecording.value = false
+        download(liveStreams.value?.get(EXT_AUDIO))
     }
 
     fun setMainAudio(audioStream: AudioStream) {
@@ -117,6 +122,7 @@ class MainViewModel(
 
             _liveStreams.value?.set(EXT_AUDIO, stream)
             setMainAudio(stream)
+            download(stream)
         }
     }
 
@@ -214,6 +220,31 @@ class MainViewModel(
 
     private fun isRecording() = recorder?.isRecording() ?: false
 
+    private fun download(stream: Any?) {
+        var name: String? = null
+        var url: String?  = null
+
+        when (stream) {
+            is Bundle? -> {
+                name = stream?.getString(SOUND_EXTRA_NAME)
+                url = stream?.getString(SOUND_EXTRA_URL)
+            }
+
+            is AudioStream? -> {
+                if (stream?.source is AudioSource.Sound) {
+                    name = stream?.source.name
+                    url = stream?.source.url
+                }
+            }
+            else -> Unit
+        }
+
+        url?.let {
+            downloadId = downloader.download(url, name?:"")
+        }
+    }
+
+
     companion object {
         const val MAIN_AUDIO = 0
         const val ALT_AUDIO = 1
@@ -222,13 +253,14 @@ class MainViewModel(
 }
 
 class MainViewModelFactory(
-    private val preferencesRepository: PreferencesRepository
+    private val preferencesRepository: PreferencesRepository,
+    private val downloader: Downloader
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
             @Suppress("unchecked_cast")
-            return MainViewModel(preferencesRepository) as T
+            return MainViewModel(preferencesRepository, downloader) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

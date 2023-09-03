@@ -27,6 +27,7 @@ import com.github.overtane.audiotester.SOUND_REQUEST_CODE
 import com.github.overtane.audiotester.SOUND_REQUEST_KEY
 import com.github.overtane.audiotester.audiostream.AudioStream
 import com.github.overtane.audiotester.databinding.FragmentMainBinding
+import com.github.overtane.audiotester.datastore.Downloader
 import com.github.overtane.audiotester.datastore.UserPrefsSerializer
 import com.github.overtane.audiotester.datastore.PreferencesRepository
 import com.github.overtane.audiotester.datastore.UserPrefs
@@ -44,7 +45,10 @@ class MainFragment : Fragment(), MenuProvider {
     ): View {
         myViewModel = ViewModelProvider(
             this,
-            MainViewModelFactory(PreferencesRepository(requireContext().dataStore))
+            MainViewModelFactory(
+                PreferencesRepository(requireContext().dataStore),
+                Downloader.getInstance(requireContext())
+            )
         )[MainViewModel::class.java]
 
         binding = FragmentMainBinding.inflate(inflater).apply {
@@ -72,6 +76,7 @@ class MainFragment : Fragment(), MenuProvider {
                     false -> stopMicAnimation()
                 }
             }
+
             setSound(MainFragmentArgs.fromBundle(requireArguments()).sound)
         }
 
