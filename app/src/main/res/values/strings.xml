@@ -99,4 +99,6 @@
     <string name="fragment_about_label">About</string>
     <string name="button_text_play">Play</string>
     <string name="button_text_stop">Stop</string>
+    <string name="settings_title_1">Audio type, sample rate and channel count</string>
+    <string name="alert_title">Alert</string>
 </resources>

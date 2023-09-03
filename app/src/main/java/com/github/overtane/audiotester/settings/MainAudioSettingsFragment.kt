@@ -22,15 +22,18 @@ class MainAudioSettingsFragment : Fragment() {
 
     private lateinit var myViewModel: SettingsViewModel
     private lateinit var binding: FragmentMainAudioSettingsBinding
+    private var sound: AudioStream? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val audioStream = MainAudioSettingsFragmentArgs.fromBundle(requireArguments()).audioStream
+
+        val initialStream = MainAudioSettingsFragmentArgs.fromBundle(requireArguments()).audioStream
+        sound = MainAudioSettingsFragmentArgs.fromBundle(requireArguments()).sound
         myViewModel = ViewModelProvider(
             this,
-            SettingsViewModelFactory(audioStream)
+            SettingsViewModelFactory(initialStream, sound)
         )[SettingsViewModel::class.java]
 
         binding = FragmentMainAudioSettingsBinding.inflate(inflater).apply {
@@ -46,9 +49,10 @@ class MainAudioSettingsFragment : Fragment() {
             }
         }
 
-        myViewModel.source.observe(viewLifecycleOwner) { source -> source.checkAttributeVisibility() }
-        initializeFragmentValues(audioStream)
-
+        myViewModel.apply {
+            audioStream.observe(viewLifecycleOwner) { initializeFragmentValues(it) }
+            source.observe(viewLifecycleOwner) { it.checkAttributeVisibility() }
+        }
         return binding.root
     }
 
@@ -89,9 +93,11 @@ class MainAudioSettingsFragment : Fragment() {
         is AudioSource.SineWave -> R.id.radio_button_audio_source_sine_wave
         is AudioSource.WhiteNoise -> R.id.radio_button_audio_source_white_noise
         is AudioSource.Silence -> R.id.radio_button_audio_source_silence
+        is AudioSource.Sound -> R.id.radio_button_audio_source_sound
         else -> androidx.appcompat.R.id.none
     }
 
+    // TODO limit available sample rates
     fun AudioType.enableSampleRateByType() {
         val selections = when (this) {
             AudioType.ALERT -> booleanArrayOf(false, false, false, false, true, true)
@@ -112,13 +118,37 @@ class MainAudioSettingsFragment : Fragment() {
     }
 
     private fun SettingsViewModel.UiAudioSource.checkAttributeVisibility() {
-        val visible = when (this == SettingsViewModel.UiAudioSource.SINE_WAVE) {
-            true -> View.VISIBLE
-            false -> View.INVISIBLE
+        when (this) {
+            SettingsViewModel.UiAudioSource.SINE_WAVE -> {
+                setAttributeVisibility(
+                    intArrayOf(View.VISIBLE, View.VISIBLE, View.VISIBLE, View.VISIBLE, View.GONE)
+                )
+            }
+
+            SettingsViewModel.UiAudioSource.WHITE_NOISE,
+            SettingsViewModel.UiAudioSource.SILENCE -> {
+                setAttributeVisibility(
+                    intArrayOf(View.VISIBLE, View.VISIBLE, View.GONE, View.GONE, View.GONE)
+                )
+            }
+
+            SettingsViewModel.UiAudioSource.SOUND -> {
+                setAttributeVisibility(
+                    intArrayOf(View.VISIBLE, View.GONE, View.GONE, View.GONE, View.VISIBLE)
+                )
+            }
+
+            else -> Unit
         }
+    }
+
+    private fun setAttributeVisibility(visibility: IntArray) {
         binding.apply {
-            sliderFrequency.visibility = visible
-            textFrequencyValue.visibility = visible
+            textDurationValue.visibility = visibility[0]
+            sliderDuration.visibility = visibility[1]
+            textFrequencyValue.visibility = visibility[2]
+            sliderFrequency.visibility = visibility[3]
+            textUrlValue.visibility = visibility[4]
         }
     }
 }

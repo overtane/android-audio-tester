@@ -25,10 +25,10 @@ class AltAudioSettingsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val audioStream = MainAudioSettingsFragmentArgs.fromBundle(requireArguments()).audioStream
+        val audioStream = AltAudioSettingsFragmentArgs.fromBundle(requireArguments()).audioStream
         myViewModel = ViewModelProvider(
             this,
-            SettingsViewModelFactory(audioStream)
+            SettingsViewModelFactory(audioStream, null)
         )[SettingsViewModel::class.java]
 
         binding = FragmentAltAudioSettingsBinding.inflate(inflater).apply {

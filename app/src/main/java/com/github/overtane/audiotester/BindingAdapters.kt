@@ -1,10 +1,13 @@
 package com.github.overtane.audiotester
 
+import android.text.Html
+import android.text.method.LinkMovementMethod
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.github.overtane.audiotester.audiostream.AudioDirection
+import com.github.overtane.audiotester.audiostream.AudioSource
 import com.github.overtane.audiotester.audiostream.AudioStream
 import com.github.overtane.audiotester.player.PlaybackStat
 
@@ -51,6 +54,18 @@ fun bindProgress(progressBar: ProgressBar, newProgress : Int) {
             newProgress > progressBar.max -> progressBar.max
             newProgress < progressBar.min -> progressBar.min
             else -> newProgress
+        }
+    }
+}
+
+@BindingAdapter("soundLink")
+fun bindSoundLink(view: TextView, details: AudioStream?) {
+    val source = details?.source as AudioSource.Sound
+    source?.let {
+        val link = "<a href=\"${it.url}\"\\>${it.name}<\\a>"
+        view.apply {
+            text = Html.fromHtml(link, 0)
+            movementMethod = LinkMovementMethod.getInstance()
         }
     }
 }

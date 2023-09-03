@@ -25,7 +25,7 @@
                 android:layout_margin="16dp"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:text="Audio type, sample rate and channel count"
+                android:text="@string/settings_title_1"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -49,7 +49,7 @@
                         android:id="@+id/radio_button_audio_type_alert"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Alert" />
+                        android:text="@string/alert_title" />
 
                     <RadioButton
                         android:id="@+id/radio_button_audio_type_default"
@@ -161,10 +161,10 @@
 
             <LinearLayout
                 android:id="@+id/layout_audio_source"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
-                android:orientation="vertical"
+                android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/audio_source_title">
 
@@ -172,80 +172,91 @@
                     android:id="@+id/radio_group_audio_source"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
+                    android:orientation="vertical"
                     android:onCheckedChanged="@{(view, id) -> viewModel.onAudioSourceChanged(view, id)}">
 
                     <RadioButton
                         android:id="@+id/radio_button_audio_source_sine_wave"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Sine Wave"
-                        android:layout_weight="1" />
+                        android:text="Sine Wave"/>
 
                     <RadioButton
                         android:id="@+id/radio_button_audio_source_white_noise"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="White Noise"
-                        android:layout_weight="1" />
+                        android:text="White Noise"/>
 
                     <RadioButton
                         android:id="@+id/radio_button_audio_source_silence"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="Silence"
-                        android:layout_weight="1"/>
+                        android:text="Silence"/>
 
                     <RadioButton
-                        android:id="@+id/radio_button_audio_file"
+                        android:id="@+id/radio_button_audio_source_sound"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:text="File"
-                        android:layout_weight="1"/>
+                        android:text="Sound"/>
 
                 </RadioGroup>
 
-                <TextView
-                    android:id="@+id/text_duration_value"
+                <LinearLayout
+                    android:id="@+id/layout_audio_extras"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginStart="8dp"
-                    app:audioDuration="@{viewModel.duration}"
-                    android:text="Duration" />
+                    android:layout_margin="16dp"
+                    android:orientation="vertical">
+>
+                    <TextView
+                        android:id="@+id/text_duration_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        app:audioDuration="@{viewModel.duration}"
+                        android:text="Duration" />
 
-                <SeekBar
-                    android:id="@+id/slider_duration"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:min="@integer/audio_duration_min"
-                    android:max="@integer/audio_duration_max"
-                    android:onProgressChanged="@{(view, progress, fromUser) -> viewModel.onProgressChanged(view, progress, fromUser)}"
-                    app:progressCheck="@{viewModel.duration}" />
+                    <SeekBar
+                        android:id="@+id/slider_duration"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:min="@integer/audio_duration_min"
+                        android:max="@integer/audio_duration_max"
+                        android:onProgressChanged="@{(view, progress, fromUser) -> viewModel.onProgressChanged(view, progress, fromUser)}"
+                        app:progressCheck="@{viewModel.duration}" />
 
 
-                <TextView
-                    android:id="@+id/text_frequency_value"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="24dp"
-                    android:layout_marginStart="8dp"
-                    app:sineWaveFrequency="@{viewModel.frequency}"
-                    android:text="Frequency" />
+                    <TextView
+                        android:id="@+id/text_frequency_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        app:sineWaveFrequency="@{viewModel.frequency}"
+                        android:text="Frequency" />
 
-                <SeekBar
-                    android:id="@+id/slider_frequency"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:min="@integer/sine_freq_min"
-                    android:max="@integer/sine_freq_max"
-                    android:onProgressChanged="@{(view, progress, fromUser) -> viewModel.onProgressChanged(view, progress, fromUser)}"
-                    app:progressCheck="@{viewModel.frequency}" />
+                    <SeekBar
+                        android:id="@+id/slider_frequency"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:min="@integer/sine_freq_min"
+                        android:max="@integer/sine_freq_max"
+                        android:onProgressChanged="@{(view, progress, fromUser) -> viewModel.onProgressChanged(view, progress, fromUser)}"
+                        app:progressCheck="@{viewModel.frequency}" />
+
+                    <TextView
+                        android:id="@+id/text_url_value"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:linksClickable="true"
+                        android:singleLine="true"
+                        android:textStyle="bold"
+                        android:visibility="invisible"
+                        app:soundLink="@{viewModel.sound}" />
+
+                </LinearLayout>
 
             </LinearLayout>
 

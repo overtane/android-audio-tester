@@ -35,6 +35,10 @@
         <argument
             android:name="audioStream"
             app:argType="com.github.overtane.audiotester.audiostream.AudioStream"/>
+        <argument
+            android:name="sound"
+            app:argType="com.github.overtane.audiotester.audiostream.AudioStream"
+            app:nullable="true"/>
     </fragment>
 
     <fragment

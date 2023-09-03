@@ -72,10 +72,11 @@ class MainViewModel(
     }
 
     fun onMainAudioClicked(view: View) {
+        val sound = liveStreams.value?.get(EXT_AUDIO)
         if (!isPlaying()) {
             liveStreams.value?.get(MAIN_AUDIO)?.let {
                 view.findNavController()
-                    .navigate(MainFragmentDirections.actionMainAudioSettings(it))
+                    .navigate(MainFragmentDirections.actionMainAudioSettings(it, sound))
             }
         }
     }

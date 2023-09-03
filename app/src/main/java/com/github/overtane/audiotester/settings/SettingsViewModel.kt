@@ -10,19 +10,21 @@ import com.github.overtane.audiotester.audiostream.AudioSource
 import com.github.overtane.audiotester.audiostream.AudioStream
 import com.github.overtane.audiotester.audiostream.AudioType
 
-class SettingsViewModel(val audioStream: AudioStream) : ViewModel() {
+class SettingsViewModel(initialStream: AudioStream, val sound: AudioStream?) :
+    ViewModel() {
 
     enum class UiAudioSource {
         SINE_WAVE,
         WHITE_NOISE,
         SILENCE,
-        FILE,
+        SOUND,
         NOTHING
     }
 
-    private var audioType: AudioType
-    private var sampleRate: Int = 0
-    private var channelCount: Int = 0
+
+    private var _audioStream = MutableLiveData<AudioStream>()
+    val audioStream
+        get() = _audioStream
 
     private var _source = MutableLiveData<UiAudioSource>()
     val source
@@ -36,30 +38,36 @@ class SettingsViewModel(val audioStream: AudioStream) : ViewModel() {
     val frequency
         get() = _frequency
 
+    private var audioType = initialStream.type
+    private var sampleRate  = initialStream.sampleRate
+    private var channelCount = initialStream.channelCount
+    var name = (sound?.source as? AudioSource.Sound)?.name ?: ""
+    private var url = (sound?.source as? AudioSource.Sound)?.name ?: ""
+
     init {
-        audioType = audioStream.type
-        sampleRate = audioStream.sampleRate
-        channelCount = audioStream.channelCount
-        _source.value = audioStream.source.asUiAudioSource()
-        _duration.value = audioStream.source.durationMs.div(1000)
-        _frequency.value = when (audioStream.source) {
-            is AudioSource.SineWave -> audioStream.source.freqHz
+        _audioStream.value = initialStream
+        _source.value = initialStream.source.asUiAudioSource()
+        _duration.value = initialStream.source.durationMs.div(1000)
+        _frequency.value = when (initialStream.source) {
+            is AudioSource.SineWave -> initialStream.source.freqHz
             else -> 200
         }
     }
 
-    fun fragmentResult() : AudioStream {
+    fun fragmentResult(): AudioStream {
         val durationMs = duration.value?.times(1000)!!
         val freqHz = frequency.value!!
-        val audioSource = when (_source.value!!) {
+        val audioSource = when (source.value!!) {
             UiAudioSource.SINE_WAVE -> AudioSource.SineWave(
                 freqHz,
                 sampleRate,
                 channelCount,
                 durationMs
             )
+
             UiAudioSource.SILENCE -> AudioSource.Silence(durationMs)
             UiAudioSource.WHITE_NOISE -> AudioSource.WhiteNoise(durationMs)
+            UiAudioSource.SOUND -> AudioSource.Sound(name, url, durationMs)
             else -> AudioSource.Nothing
         }
         return AudioStream(audioType, sampleRate, channelCount, audioSource)
@@ -73,14 +81,17 @@ class SettingsViewModel(val audioStream: AudioStream) : ViewModel() {
         }
     }
 
-    fun onAudioFormatChanged(view: View, id: Int) = when (view.id) {
-        R.id.radio_group_audio_type -> audioType = id.asAudioType()
-        R.id.radio_group_sample_rate -> sampleRate = id.asSampleRate()
-        R.id.radio_group_channel_count -> channelCount = id.asChannelCount()
-        else -> Unit
+    fun onAudioFormatChanged(view: View, id: Int) {
+        when (view.id) {
+            R.id.radio_group_audio_type -> audioType = id.asAudioType()
+            R.id.radio_group_sample_rate -> sampleRate = id.asSampleRate()
+            R.id.radio_group_channel_count -> channelCount = id.asChannelCount()
+            else -> Unit
+        }
+        _audioStream.value = fragmentResult()
     }
 
-    private fun Int.asAudioType() = when (this) {
+        private fun Int.asAudioType() = when (this) {
         R.id.radio_button_audio_type_alert -> AudioType.ALERT
         R.id.radio_button_audio_type_default -> AudioType.DEFAULT
         R.id.radio_button_audio_type_entertainment -> AudioType.ENTERTAINMENT
@@ -105,34 +116,48 @@ class SettingsViewModel(val audioStream: AudioStream) : ViewModel() {
         else -> 0
     }
 
-    fun onAudioSourceChanged(view : View, id : Int) {
+    fun onAudioSourceChanged(view: View, id: Int) {
         _source.value = id.asAudioSource()
+        if (_source.value == UiAudioSource.SOUND) {
+            sound?.let {
+                sampleRate = it.sampleRate
+                channelCount = it.channelCount
+                audioType = AudioType.ENTERTAINMENT
+                _duration.value = sound.source.durationMs.div(1000)
+                name = (sound.source as AudioSource.Sound).name
+                url = sound.source.url
+            }
+        }
+        _audioStream.value = fragmentResult()
     }
 
     private fun Int.asAudioSource() = when (this) {
         R.id.radio_button_audio_source_sine_wave -> UiAudioSource.SINE_WAVE
-        R.id.radio_button_audio_source_silence -> UiAudioSource.SILENCE
         R.id.radio_button_audio_source_white_noise -> UiAudioSource.WHITE_NOISE
+        R.id.radio_button_audio_source_silence -> UiAudioSource.SILENCE
+        R.id.radio_button_audio_source_sound -> UiAudioSource.SOUND
         else -> UiAudioSource.NOTHING
     }
 
-    private fun AudioSource.asUiAudioSource() = when (this){
+    private fun AudioSource.asUiAudioSource() = when (this) {
         is AudioSource.SineWave -> UiAudioSource.SINE_WAVE
         is AudioSource.WhiteNoise -> UiAudioSource.WHITE_NOISE
         is AudioSource.Silence -> UiAudioSource.SILENCE
+        is AudioSource.Sound -> UiAudioSource.SOUND
         else -> UiAudioSource.NOTHING
     }
 
 }
 
 class SettingsViewModelFactory(
-    private val audioStream: AudioStream
+    private val audioStream: AudioStream,
+    private val sound: AudioStream?
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(SettingsViewModel::class.java)) {
             @Suppress("unchecked_cast")
-            return SettingsViewModel(audioStream) as T
+            return SettingsViewModel(audioStream, sound) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }
