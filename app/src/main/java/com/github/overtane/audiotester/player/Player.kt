@@ -53,6 +53,7 @@ class Player(private val stream: AudioStream) {
         Log.d(TAG, "Device id ${playback.routedDevice.id}")
         Log.d(TAG, "Buffer size in samples ${playback.bufferSizeInFrames * playback.channelCount}")
         Log.d(TAG, "Performance mode ${playback.performanceMode}")
+        Log.d(TAG, "Duration $duration")
         //Log.d(TAG, "Wrote $written samples: ${buf[0]}, ${buf[1]}, ${buf[2]}, ${buf[3]}")
 
         withTimeout(duration.toLong()) {

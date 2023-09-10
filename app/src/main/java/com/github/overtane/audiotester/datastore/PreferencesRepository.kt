@@ -65,6 +65,7 @@ class PreferencesRepository(
                                 .setFrequency(mainStream.source.frequency())
                                 .setName(mainStream.source.name())
                                 .setUrl(mainStream.source.url())
+                                .setPreview(mainStream.source.preview())
                                 .build()
                         )
                         .build()
@@ -90,10 +91,11 @@ class PreferencesRepository(
                         .setChannelCount(extStream.channelCount)
                         .setSource(
                             prefs.ext.source.toBuilder()
-                                .setType(UserPrefs.AudioSourceType.URL)
+                                .setType(UserPrefs.AudioSourceType.SOUND)
                                 .setDuration(extStream.source.durationMs)
                                 .setName((extStream.source as? AudioSource.Sound)?.name)
                                 .setUrl((extStream.source as? AudioSource.Sound)?.url)
+                                .setPreview((extStream.source as? AudioSource.Sound)?.preview)
                                 .build()
                         )
                         .build()
@@ -135,9 +137,10 @@ class PreferencesRepository(
 
             UserPrefs.AudioSourceType.WHITE_NOISE -> AudioSource.WhiteNoise(source.duration)
             UserPrefs.AudioSourceType.SILENCE -> AudioSource.Silence(source.duration)
-            UserPrefs.AudioSourceType.URL -> AudioSource.Sound(
+            UserPrefs.AudioSourceType.SOUND -> AudioSource.Sound(
                 source.name,
                 source.url,
+                source.preview,
                 source.duration
             )
 
@@ -148,14 +151,14 @@ class PreferencesRepository(
         is AudioSource.SineWave -> UserPrefs.AudioSourceType.SINE_WAVE
         is AudioSource.WhiteNoise -> UserPrefs.AudioSourceType.WHITE_NOISE
         is AudioSource.Silence -> UserPrefs.AudioSourceType.SILENCE
-        is AudioSource.Sound -> UserPrefs.AudioSourceType.URL
+        is AudioSource.Sound -> UserPrefs.AudioSourceType.SOUND
         else -> UserPrefs.AudioSourceType.UNRECOGNIZED
     }
 
-    private fun AudioSource.frequency() = if (this is AudioSource.SineWave) this.freqHz else 0
-    private fun AudioSource.name() = if (this is AudioSource.Sound) this.name else ""
-    private fun AudioSource.url() = if (this is AudioSource.Sound) this.url else ""
-
+    private fun AudioSource.frequency() = if (this is AudioSource.SineWave) freqHz else 0
+    private fun AudioSource.name() = if (this is AudioSource.Sound) name else ""
+    private fun AudioSource.url() = if (this is AudioSource.Sound) url else ""
+    private fun AudioSource.preview() = if (this is AudioSource.Sound) preview else ""
     companion object {
         // Initial stream settings for the first time read
         private const val INIT_DURATION_MS = 10000
@@ -192,9 +195,11 @@ class PreferencesRepository(
                 type = AudioType.ENTERTAINMENT,
                 sampleRate = 0,
                 channelCount = 0,
-                source = AudioSource.Sound(name = "", url = "", durationMs = 0),
+                source = AudioSource.Sound(name = "", url = "", preview = "", durationMs = 0),
             )
     }
+
+
 }
 
 

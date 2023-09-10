@@ -1,13 +1,17 @@
 package com.github.overtane.audiotester.audiostream
 
-
+import android.media.MediaExtractor
+import android.media.MediaFormat
 import android.os.Parcelable
+import android.util.Log
 import kotlinx.parcelize.IgnoredOnParcel
 import kotlinx.parcelize.Parcelize
+import java.io.IOException
 import kotlin.math.PI
 import kotlin.math.sin
 import kotlin.random.Random
 
+private const val TAG = "AudioSource"
 sealed class AudioSource(open val durationMs: Int) : Parcelable {
 
     abstract fun nextSamples(size: Int): ShortArray
@@ -83,14 +87,19 @@ sealed class AudioSource(open val durationMs: Int) : Parcelable {
         override fun nextSamples(size: Int): ShortArray {
             val len = if (cursor + size > samples.size) samples.size - cursor else size
             val subarray = samples.copyOfRange(cursor, cursor + len)
-            cursor += size
+            cursor += len
             return subarray
         }
     }
 
     @Parcelize
-    class Sound(val name: String, val url: String, override val durationMs: Int) :
-        AudioSource(durationMs) {
+    class Sound(
+        val name: String,
+        val url: String, // home page of the sound
+        val preview: String, // url of the audio file
+        override val durationMs: Int
+    ) : AudioSource(durationMs) {
+
         override fun nextSamples(size: Int) = ShortArray(size) { 0 }
 
         override fun toString(): String {

@@ -61,8 +61,8 @@ fun bindProgress(progressBar: ProgressBar, newProgress : Int) {
 @BindingAdapter("soundLink")
 fun bindSoundLink(view: TextView, details: AudioStream?) {
     val source = details?.source as AudioSource.Sound
-    source?.let {
-        val link = "<a href=\"${it.url}\"\\>${it.name}<\\a>"
+    source.apply {
+        val link = "<a href=\"$url\"\\>$name<\\a>"
         view.apply {
             text = Html.fromHtml(link, 0)
             movementMethod = LinkMovementMethod.getInstance()

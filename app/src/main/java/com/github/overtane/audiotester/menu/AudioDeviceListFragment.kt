@@ -21,15 +21,11 @@ class AudioDeviceListFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentAudioDeviceListBinding.inflate(layoutInflater)
-        val view = binding.root
-
-        if (view is RecyclerView) {
-            with(view) {
-                layoutManager = LinearLayoutManager(context)
-                adapter = AudioDeviceRecyclerViewAdapter(audioDevices())
-            }
+        binding.root.apply {
+            layoutManager = LinearLayoutManager(context)
+            adapter = AudioDeviceRecyclerViewAdapter(audioDevices())
+            return this
         }
-        return view
     }
 
     private fun audioDevices(): List<AudioDeviceDetails> {

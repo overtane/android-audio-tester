@@ -52,9 +52,11 @@ class Recorder(private val stream: AudioStream) {
             while (isActive) { // is active until cancelled
                 // Note: Read returns number of bytes
                 val read = record.read(buf, 0, buf.size)
-                status.framesStreamed += read / record.channelCount
-                status.latencyMs = latencyMs()
-                status.recording += buf.asList()
+                with (status) {
+                    framesStreamed += read / record.channelCount
+                    latencyMs = latencyMs()
+                    recording += buf.asList()
+                }
                 //Log.d(TAG, "Wrote $read samples: ${buf[0]}, ${buf[1]}, ${buf[2]}, ${buf[3]}")
             }
             Log.d(TAG, "Record loop exited")

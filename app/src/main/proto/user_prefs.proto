@@ -17,7 +17,7 @@ message UserPrefs {
         SINE_WAVE = 0;
         WHITE_NOISE = 1;
         SILENCE = 2;
-        URL = 3;
+        SOUND = 3;
     }
 
     message AudioSource {
@@ -26,6 +26,7 @@ message UserPrefs {
         optional int32 frequency = 3; // for SINE_WAVE type
         optional string url = 4; // for URL type
         optional string name = 5; // for URL type
+        optional string preview = 6; // for URL type
     }
 
     message AudioStream {

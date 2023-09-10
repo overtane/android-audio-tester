@@ -4,6 +4,7 @@ import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.map
 import androidx.lifecycle.viewModelScope
 import com.github.overtane.audiotester.audiostream.AudioSource
@@ -96,5 +97,20 @@ class RecordingPlaybackViewModel(
     companion object {
         private const val DATE_FORMAT = "yyyy-MM-dd H:mm:ss"
         private val dateFormat = SimpleDateFormat(DATE_FORMAT)
+    }
+}
+
+class RecordingPlaybackViewModelFactory(
+    private val audioStream: AudioStream,
+    private val recordingStat: RecordStat,
+    private val recorded: Date
+) : ViewModelProvider.Factory {
+
+    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+        if (modelClass.isAssignableFrom(RecordingPlaybackViewModel::class.java)) {
+            @Suppress("unchecked_cast")
+            return RecordingPlaybackViewModel(audioStream, recordingStat, recorded) as T
+        }
+        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }

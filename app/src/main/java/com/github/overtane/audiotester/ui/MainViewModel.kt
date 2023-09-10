@@ -4,15 +4,21 @@ package com.github.overtane.audiotester.ui
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.navigation.findNavController
+import com.github.overtane.audiotester.AudioTesterApp
 import com.github.overtane.audiotester.R
 import com.github.overtane.audiotester.SOUND_EXTRA_CHANNELS
 import com.github.overtane.audiotester.SOUND_EXTRA_DURATION
 import com.github.overtane.audiotester.SOUND_EXTRA_NAME
+import com.github.overtane.audiotester.SOUND_EXTRA_PREVIEW
 import com.github.overtane.audiotester.SOUND_EXTRA_SAMPLE_RATE
 import com.github.overtane.audiotester.SOUND_EXTRA_URL
 import com.github.overtane.audiotester.TAG
@@ -20,21 +26,22 @@ import com.github.overtane.audiotester.audiostream.AudioDirection
 import com.github.overtane.audiotester.audiostream.AudioSource
 import com.github.overtane.audiotester.audiostream.AudioStream
 import com.github.overtane.audiotester.audiostream.AudioType
-import com.github.overtane.audiotester.datastore.Downloader
 import com.github.overtane.audiotester.datastore.PreferencesRepository
+import com.github.overtane.audiotester.datastore.SoundRepository
 import com.github.overtane.audiotester.player.Player
 import com.github.overtane.audiotester.player.PlaybackStat
 import com.github.overtane.audiotester.recorder.Recorder
 import com.github.overtane.audiotester.recorder.RecordStat
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import java.util.Calendar
 import java.util.Date
 
 class MainViewModel(
     private val preferencesRepository: PreferencesRepository,
-    private val downloader: Downloader
+    private val soundRepository: SoundRepository
 ) : ViewModel() {
 
     private var _liveStreams = MutableLiveData<MutableList<AudioStream>>()
@@ -53,20 +60,24 @@ class MainViewModel(
     val recordInfo
         get() = _recordInfo
 
+    private val _decodeState = MutableLiveData<SoundRepository.DecodeState>()
+    val decodeState: LiveData<SoundRepository.DecodeState> = _decodeState
+
     private var player: MutableList<Player>
     private var recorder: Recorder? = null
     var isRecording = MutableLiveData<Boolean>()
     private var recorded: Date = Calendar.getInstance().time
 
-    private var downloadId: Long = 0 // ongoing download
-
     init {
+        Log.d(TAG, "INIT VIEWMODEL")
+        viewModelScope.launch {
+            soundRepository.decodeState.collectLatest { _decodeState.postValue(it) }
+        }
+
         val prefs = preferencesRepository.get()
         _liveStreams.value = prefs
-        preferencesRepository.set(prefs)
-        player = mutableListOf(Player(prefs[0]), Player(prefs[1]))
+        player = mutableListOf(Player(prefs[MAIN_AUDIO]), Player(prefs[ALT_AUDIO]))
         isRecording.value = false
-        download(liveStreams.value?.get(EXT_AUDIO))
     }
 
     fun setMainAudio(audioStream: AudioStream) {
@@ -110,19 +121,13 @@ class MainViewModel(
                 source = AudioSource.Sound(
                     name = bundle.getString(SOUND_EXTRA_NAME) ?: "",
                     url = bundle.getString(SOUND_EXTRA_URL) ?: "",
+                    preview = bundle.getString(SOUND_EXTRA_PREVIEW) ?: "",
                     durationMs = bundle.getInt(SOUND_EXTRA_DURATION) * 1000
                 )
             )
-
-            Log.d(TAG, "$SOUND_EXTRA_NAME == ${(stream.source as AudioSource.Sound).name}")
-            Log.d(TAG, "$SOUND_EXTRA_URL == ${stream.source.url}")
-            Log.d(TAG, "$SOUND_EXTRA_DURATION == ${stream.source.durationMs}")
-            Log.d(TAG, "$SOUND_EXTRA_SAMPLE_RATE == ${stream.sampleRate}")
-            Log.d(TAG, "$SOUND_EXTRA_CHANNELS == ${stream.channelCount}")
-
             _liveStreams.value?.set(EXT_AUDIO, stream)
             setMainAudio(stream)
-            download(stream)
+            soundRepository.decodeStream(stream)
         }
     }
 
@@ -165,13 +170,34 @@ class MainViewModel(
     }
 
     private fun startPlayback(view: View, i: Int) {
-        player[i] = Player(liveStreams.value?.get(i)!!)
+        player[i] = Player(getStream(i))
         viewModelScope.async(Dispatchers.IO) { player[i].play() }
         viewModelScope.launch {
             player[i].status().collect { updateInfo(i, it) }
             stopPlayback(view, i)
         }
     }
+
+    private fun getStream(i: Int) = when (i) {
+        ALT_AUDIO -> liveStreams.value?.get(ALT_AUDIO)!!
+        MAIN_AUDIO -> {
+            // TODO if sound exist and is selected
+            if (soundIsSelectedAndAvailable()) {
+                with(soundRepository.sound.value!!) {
+                    (this.source as AudioSource.AudioBuffer).reset()
+                    this
+                }
+            } else {
+                liveStreams.value?.get(MAIN_AUDIO)!!
+            }
+        }
+
+        else -> AudioStream(AudioType.DEFAULT, 48000, 2, AudioSource.Nothing)
+    }
+
+    private fun soundIsSelectedAndAvailable(): Boolean =
+        (liveStreams.value?.get(MAIN_AUDIO)?.source is AudioSource.Sound) &&
+                (soundRepository.decodeState.value == SoundRepository.DecodeState.READY)
 
     private fun startRecord() {
         recorded = Calendar.getInstance().time
@@ -205,6 +231,7 @@ class MainViewModel(
     }
 
     private fun stopPlayback(view: View, i: Int) {
+        Log.d(TAG, "Stop Playback")
         player[i].stop()
         view.isSelected = false
     }
@@ -220,48 +247,17 @@ class MainViewModel(
 
     private fun isRecording() = recorder?.isRecording() ?: false
 
-    private fun download(stream: Any?) {
-        var name: String? = null
-        var url: String?  = null
-
-        when (stream) {
-            is Bundle? -> {
-                name = stream?.getString(SOUND_EXTRA_NAME)
-                url = stream?.getString(SOUND_EXTRA_URL)
-            }
-
-            is AudioStream? -> {
-                if (stream?.source is AudioSource.Sound) {
-                    name = stream?.source.name
-                    url = stream?.source.url
-                }
-            }
-            else -> Unit
-        }
-
-        url?.let {
-            downloadId = downloader.download(url, name?:"")
-        }
-    }
-
-
     companion object {
         const val MAIN_AUDIO = 0
         const val ALT_AUDIO = 1
         const val EXT_AUDIO = 2
-    }
-}
 
-class MainViewModelFactory(
-    private val preferencesRepository: PreferencesRepository,
-    private val downloader: Downloader
-) : ViewModelProvider.Factory {
-
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(MainViewModel::class.java)) {
-            @Suppress("unchecked_cast")
-            return MainViewModel(preferencesRepository, downloader) as T
+        val Factory: ViewModelProvider.Factory = viewModelFactory {
+            initializer {
+                val app = this[APPLICATION_KEY] as AudioTesterApp
+                MainViewModel(app.preferencesRepository, app.soundRepository)
+            }
         }
-        throw IllegalArgumentException("Unknown ViewModel class")
     }
 }
+

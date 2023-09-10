@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator
 import android.app.PendingIntent
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
@@ -13,12 +12,10 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
-import androidx.datastore.core.DataStore
-import androidx.datastore.dataStore
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.github.overtane.audiotester.R
@@ -27,15 +24,13 @@ import com.github.overtane.audiotester.SOUND_REQUEST_CODE
 import com.github.overtane.audiotester.SOUND_REQUEST_KEY
 import com.github.overtane.audiotester.audiostream.AudioStream
 import com.github.overtane.audiotester.databinding.FragmentMainBinding
-import com.github.overtane.audiotester.datastore.Downloader
-import com.github.overtane.audiotester.datastore.UserPrefsSerializer
-import com.github.overtane.audiotester.datastore.PreferencesRepository
-import com.github.overtane.audiotester.datastore.UserPrefs
+import com.github.overtane.audiotester.datastore.SoundRepository.DecodeState
 
 class MainFragment : Fragment(), MenuProvider {
 
+    private val myViewModel: MainViewModel by viewModels { MainViewModel.Factory }
+
     private lateinit var binding: FragmentMainBinding
-    private lateinit var myViewModel: MainViewModel
 
     private var animator: ObjectAnimator? = null
 
@@ -43,13 +38,7 @@ class MainFragment : Fragment(), MenuProvider {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        myViewModel = ViewModelProvider(
-            this,
-            MainViewModelFactory(
-                PreferencesRepository(requireContext().dataStore),
-                Downloader.getInstance(requireContext())
-            )
-        )[MainViewModel::class.java]
+        super.onCreateView(inflater, container, savedInstanceState)
 
         binding = FragmentMainBinding.inflate(inflater).apply {
             lifecycleOwner = viewLifecycleOwner
@@ -69,6 +58,12 @@ class MainFragment : Fragment(), MenuProvider {
             Lifecycle.State.RESUMED
         )
 
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         myViewModel.apply {
             isRecording.observe(viewLifecycleOwner) { recording ->
                 when (recording) {
@@ -76,15 +71,20 @@ class MainFragment : Fragment(), MenuProvider {
                     false -> stopMicAnimation()
                 }
             }
+            decodeState.observe(viewLifecycleOwner) { state ->
+                when (state) {
+                    DecodeState.DECODING ->
+                        Toast.makeText(context, "Decoding sound", Toast.LENGTH_SHORT).show()
+                    DecodeState.DECODED ->
+                        Toast.makeText(context, "Sound ready", Toast.LENGTH_SHORT).show()
+                    else -> Unit
+                }
+            }
 
-            setSound(MainFragmentArgs.fromBundle(requireArguments()).sound)
+            MainFragmentArgs.fromBundle(requireArguments()).sound?.let {
+                setSound(it)
+            }
         }
-
-        return binding.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         // Use fragment result listeners to get user input from settings fragment
         setFragmentResultListener(MAIN_REQUEST_KEY) { _, bundle ->
@@ -158,13 +158,6 @@ class MainFragment : Fragment(), MenuProvider {
         const val MAIN_REQUEST_KEY = "MainAudioSettings"
         const val ALT_REQUEST_KEY = "AltAudioSettings"
         const val AUDIO_STREAM_BUNDLE_KEY = "AudioStream"
-
-        private const val DATA_STORE_FILE_NAME = "user_prefs.pb"
-
-        private val Context.dataStore: DataStore<UserPrefs> by dataStore(
-            fileName = DATA_STORE_FILE_NAME,
-            serializer = UserPrefsSerializer
-        )
 
         private const val SOUND_BROWSER_ERROR = "SoundBrowser not available"
     }

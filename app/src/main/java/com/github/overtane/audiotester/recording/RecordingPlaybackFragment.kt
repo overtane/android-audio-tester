@@ -50,17 +50,3 @@ class RecordingPlaybackFragment : Fragment() {
     }
 }
 
-class RecordingPlaybackViewModelFactory(
-    private val audioStream: AudioStream,
-    private val recordingStat: RecordStat,
-    private val recorded: Date
-) : ViewModelProvider.Factory {
-
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(RecordingPlaybackViewModel::class.java)) {
-            @Suppress("unchecked_cast")
-            return RecordingPlaybackViewModel(audioStream, recordingStat, recorded) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
-    }
-}

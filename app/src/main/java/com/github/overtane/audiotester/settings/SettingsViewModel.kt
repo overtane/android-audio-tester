@@ -41,8 +41,9 @@ class SettingsViewModel(initialStream: AudioStream, val sound: AudioStream?) :
     private var audioType = initialStream.type
     private var sampleRate  = initialStream.sampleRate
     private var channelCount = initialStream.channelCount
-    var name = (sound?.source as? AudioSource.Sound)?.name ?: ""
-    private var url = (sound?.source as? AudioSource.Sound)?.name ?: ""
+    val name = (sound?.source as? AudioSource.Sound)?.name ?: ""
+    private val url = (sound?.source as? AudioSource.Sound)?.url ?: ""
+    private val preview = (sound?.source as? AudioSource.Sound)?.preview ?: ""
 
     init {
         _audioStream.value = initialStream
@@ -67,7 +68,7 @@ class SettingsViewModel(initialStream: AudioStream, val sound: AudioStream?) :
 
             UiAudioSource.SILENCE -> AudioSource.Silence(durationMs)
             UiAudioSource.WHITE_NOISE -> AudioSource.WhiteNoise(durationMs)
-            UiAudioSource.SOUND -> AudioSource.Sound(name, url, durationMs)
+            UiAudioSource.SOUND -> AudioSource.Sound(name, url, preview, durationMs)
             else -> AudioSource.Nothing
         }
         return AudioStream(audioType, sampleRate, channelCount, audioSource)
@@ -124,8 +125,6 @@ class SettingsViewModel(initialStream: AudioStream, val sound: AudioStream?) :
                 channelCount = it.channelCount
                 audioType = AudioType.ENTERTAINMENT
                 _duration.value = sound.source.durationMs.div(1000)
-                name = (sound.source as AudioSource.Sound).name
-                url = sound.source.url
             }
         }
         _audioStream.value = fragmentResult()

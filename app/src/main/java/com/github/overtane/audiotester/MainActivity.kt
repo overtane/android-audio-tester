@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.os.PersistableBundle
 import android.util.Log
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -35,7 +36,10 @@ class MainActivity : AppCompatActivity() {
 
         navController = findNavController(R.id.nav_host_fragment).apply {
             val sound: Bundle? = intent?.extras?.getParcelable(SOUND_REPLY_KEY)
-            setGraph(R.navigation.nav_graph, bundleOf("sound" to sound))
+            sound?.let {
+                setGraph(R.navigation.nav_graph, bundleOf("sound" to it))
+                intent?.replaceExtras(null)
+            }
             setupActionBarWithNavController(this, AppBarConfiguration(this.graph))
         }
     }
