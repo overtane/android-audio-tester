@@ -197,7 +197,8 @@
                         android:id="@+id/radio_button_audio_source_sound"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Sound"/>
+                        android:text="Sound"
+                        android:visibility="gone"/>
 
                 </RadioGroup>
 

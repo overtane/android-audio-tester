@@ -183,7 +183,7 @@ class MainViewModel(
         MAIN_AUDIO -> {
             // TODO if sound exist and is selected
             if (soundIsSelectedAndAvailable()) {
-                with(soundRepository.sound.value!!) {
+                with(soundRepository.sound.value.second!!) {
                     (this.source as AudioSource.AudioBuffer).reset()
                     this
                 }

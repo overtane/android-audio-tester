@@ -66,6 +66,14 @@ class MainAudioSettingsFragment : Fragment() {
                 radioGroupAudioSource.check(it.source.checkId())
             }
         }
+        sound.also {
+            binding.apply {
+                if ((it?.source as AudioSource.Sound).preview.isNotEmpty())
+                    radioButtonAudioSourceSound.visibility = View.VISIBLE
+                else
+                    radioButtonAudioSourceSound.visibility = View.GONE
+            }
+        }
     }
 
     private fun AudioType.checkId(): Int = when (this) {

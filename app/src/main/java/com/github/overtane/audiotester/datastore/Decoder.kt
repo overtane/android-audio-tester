@@ -15,7 +15,7 @@ import java.nio.ShortBuffer
 import java.util.concurrent.TimeoutException
 
 private const val BUFFER_TIMEOUT_US: Long = 1000000
-
+private const val TRACK = 0
 object Decoder {
 
     suspend fun decodeMp3(url: String): AudioStream {
@@ -25,14 +25,15 @@ object Decoder {
         withTimeout(10000.toLong()) {
             extractor.apply {
                 setDataSource(url)
-                selectTrack(0)
-                codec.configure(getTrackFormat(0), null, null, 0)
+                selectTrack(TRACK)
             }
         }
 
+        codec.configure(extractor.getTrackFormat(TRACK), null, null, 0)
+
         Log.d(TAG, "Start decode $url")
         var format = codec.outputFormat
-        val samples = mutableListOf<Short>()
+        val samples = mutableListOf<Short>() // this collects decoded samples
 
         with(codec) {
             start()
@@ -83,9 +84,9 @@ object Decoder {
 
         val sampleRate = format.getInteger(MediaFormat.KEY_SAMPLE_RATE)
         val channelCount = format.getInteger(MediaFormat.KEY_CHANNEL_COUNT)
-        val durationMs = samples.size * 1000 / sampleRate / channelCount
+        val durationMs = samples.size / sampleRate / channelCount * 1000
 
-        Log.d(TAG, "DONE $durationMs ms")
+        Log.d(TAG, "DONE $sampleRate, $channelCount, $durationMs ms")
         return AudioStream(
             AudioType.ENTERTAINMENT,
             sampleRate,
@@ -100,4 +101,5 @@ object Decoder {
         byteBuffer.asShortBuffer().get(shortArray)
         return shortArray
     }
+
 }

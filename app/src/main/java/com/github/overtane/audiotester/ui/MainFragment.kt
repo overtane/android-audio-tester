@@ -77,6 +77,8 @@ class MainFragment : Fragment(), MenuProvider {
                         Toast.makeText(context, "Decoding sound", Toast.LENGTH_SHORT).show()
                     DecodeState.DECODED ->
                         Toast.makeText(context, "Sound ready", Toast.LENGTH_SHORT).show()
+                    DecodeState.ERROR ->
+                        Toast.makeText(context, "Sound unavailable", Toast.LENGTH_SHORT).show()
                     else -> Unit
                 }
             }
