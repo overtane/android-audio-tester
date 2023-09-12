@@ -11,12 +11,11 @@ import com.github.overtane.audiotester.audiostream.AudioType
 import kotlinx.coroutines.withTimeout
 import java.nio.ByteBuffer
 import java.nio.ByteOrder
-import java.nio.ShortBuffer
 import java.util.concurrent.TimeoutException
 
 private const val BUFFER_TIMEOUT_US: Long = 1000000
 private const val TRACK = 0
-object Decoder {
+object Mp3Decoder {
 
     suspend fun decodeMp3(url: String): AudioStream {
         val extractor = MediaExtractor()

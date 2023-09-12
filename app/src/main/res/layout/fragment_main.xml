@@ -42,7 +42,7 @@
                         android:id="@+id/primary_audio_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Primary Audio"
+                        android:text="@string/primary_audio_title"
                         android:textSize="24sp"
                         android:textStyle="bold" />
 
@@ -50,7 +50,7 @@
                         android:id="@+id/primary_audio_source_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Audio Source"
+                        android:text="@string/audio_source_title"
                         android:textStyle="bold" />
 
                     <TextView
@@ -83,7 +83,7 @@
                         android:layout_weight="1"
                         android:backgroundTint="@color/selector_button_background_color"
                         android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
-                        android:contentDescription="Start and stop main audio playback"
+                        android:contentDescription="@string/play_button_content_descr"
                         app:srcCompat="@drawable/selector_ic_vector_play"
                         app:tint="@color/selector_button_foreground_color"/>
 
@@ -96,7 +96,7 @@
                         android:backgroundTint="@color/selector_button_background_color"
                         android:textColor="@color/selector_button_foreground_color"
                         android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
-                        android:contentDescription="Duck main audio"
+                        android:contentDescription="@string/duck_button_content_descr"
                         app:srcCompat="@drawable/ic_vector_duck"
                         app:tint="@color/selector_button_foreground_color" />
 
@@ -109,7 +109,8 @@
                         android:backgroundTint="@color/selector_button_background_color"
                         android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
                         app:srcCompat="@drawable/ic_vector_repeat"
-                        app:tint="@color/selector_button_foreground_color" />
+                        app:tint="@color/selector_button_foreground_color"
+                        android:contentDescription="@string/repeat_button_content_descr" />
 
                     <ImageButton
                         android:id="@+id/button_primary_audio_recording"
@@ -122,7 +123,8 @@
                         android:backgroundTint="?attr/colorOnPrimary"
                         app:microphoneState="@{viewModel.liveStreams[0]}"
                         app:srcCompat="@drawable/selector_ic_vector_mic"
-                        app:tint="?attr/colorPrimary" />
+                        app:tint="?attr/colorPrimary"
+                        android:contentDescription="@string/microphone_icon_content_descr" />
 
                 </LinearLayout>
 
@@ -148,7 +150,8 @@
                         android:layout_weight="5"
                         android:visibility="invisible"
                         app:srcCompat="@drawable/ic_vector_error"
-                        app:tint="?attr/colorError"/>
+                        app:tint="?attr/colorError"
+                        android:contentDescription="@string/error_icon_content_descr" />
 
                 </LinearLayout>
 
@@ -206,7 +209,7 @@
                         android:id="@+id/secondary_audio_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Secondary Audio"
+                        android:text="@string/secondary_audio_title"
                         android:textSize="24sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="parent"
@@ -216,7 +219,7 @@
                         android:id="@+id/secondary_audio_source_title"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Audio source"
+                        android:text="@string/audio_source_title"
                         android:textStyle="bold" />
 
                     <TextView
@@ -251,7 +254,8 @@
                         android:backgroundTint="@color/selector_button_background_color"
                         android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
                         app:srcCompat="@drawable/selector_ic_vector_play"
-                        app:tint="@color/selector_button_foreground_color" />
+                        app:tint="@color/selector_button_foreground_color"
+                        android:contentDescription="@string/play_button_content_descr" />
 
                     <ImageButton
                         android:id="@+id/button_secondary_audio_duck"
@@ -263,7 +267,8 @@
                         android:textColor="@color/selector_button_foreground_color"
                         android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
                         app:srcCompat="@drawable/ic_vector_duck"
-                        app:tint="@color/selector_button_foreground_color" />
+                        app:tint="@color/selector_button_foreground_color"
+                        android:contentDescription="@string/duck_button_content_descr" />
 
                     <ImageButton
                         android:id="@+id/button_secondary_audio_repeat"
@@ -274,7 +279,8 @@
                         android:backgroundTint="@color/selector_button_background_color"
                         android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
                         app:srcCompat="@drawable/ic_vector_repeat"
-                        app:tint="@color/selector_button_foreground_color" />
+                        app:tint="@color/selector_button_foreground_color"
+                        android:contentDescription="@string/repeat_button_content_descr" />
 
                     <Button
                         android:id="@+id/button_secondary_fill"
@@ -308,7 +314,8 @@
                         android:layout_weight="5"
                         android:visibility="invisible"
                         app:srcCompat="@drawable/ic_vector_error"
-                        app:tint="?attr/colorError"/>
+                        app:tint="?attr/colorError"
+                        android:contentDescription="@string/error_icon_content_descr" />
                 </LinearLayout>
 
                 <ProgressBar

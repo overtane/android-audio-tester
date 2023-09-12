@@ -25,7 +25,7 @@
                 android:layout_margin="16dp"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:text="@string/settings_title_1"
+                android:text="@string/main_settings_title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -49,31 +49,31 @@
                         android:id="@+id/radio_button_audio_type_alert"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="@string/alert_title" />
+                        android:text="@string/audio_type_alert_text" />
 
                     <RadioButton
                         android:id="@+id/radio_button_audio_type_default"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Default" />
+                        android:text="@string/audio_type_default_text" />
 
                     <RadioButton
                         android:id="@+id/radio_button_audio_type_entertainment"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Media" />
+                        android:text="@string/audio_type_media_text" />
 
                     <RadioButton
                         android:id="@+id/radio_button_audio_type_speech_recognition"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Speech" />
+                        android:text="@string/audio_type_speech_text" />
 
                     <RadioButton
                         android:id="@+id/radio_button_audio_type_telephony"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Telephony" />
+                        android:text="@string/audio_type_telephony_text" />
 
                 </RadioGroup>
 
@@ -89,37 +89,37 @@
                         android:id="@+id/radio_button_sample_rate_8khz"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="8 kHz" />
+                        android:text="@string/samplerate_8_khz_text" />
 
                     <RadioButton
                         android:id="@+id/radio_button_sample_rate_16khz"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="16 kHz" />
+                        android:text="@string/samplerate_16_khz_text" />
 
                     <RadioButton
                         android:id="@+id/radio_button_sample_rate_24khz"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="24 kHz" />
+                        android:text="@string/samplerate_24_khz_text" />
 
                     <RadioButton
                         android:id="@+id/radio_button_sample_rate_32khz"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="32 kHz" />
+                        android:text="@string/samplerate_32_khz_text" />
 
                     <RadioButton
                         android:id="@+id/radio_button_sample_rate_44_1khz"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="44.1 kHz" />
+                        android:text="@string/samplerate_44_1_khz_text" />
 
                     <RadioButton
                         android:id="@+id/radio_button_sample_rate_48khz"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="48 kHz" />
+                        android:text="@string/samplerate_48_khz_text" />
 
                 </RadioGroup>
 
@@ -135,13 +135,13 @@
                         android:id="@+id/radio_button_channel_count_mono"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Mono" />
+                        android:text="@string/channel_count_mono_text" />
 
                     <RadioButton
                         android:id="@+id/radio_button_channel_count_stereo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Stereo" />
+                        android:text="@string/channel_count_stereo_text" />
 
                 </RadioGroup>
 
@@ -154,7 +154,7 @@
                 android:layout_margin="16dp"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:text="Audio source"
+                android:text="@string/audio_source_title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/layout_audio_format" />
 
@@ -179,25 +179,25 @@
                         android:id="@+id/radio_button_audio_source_sine_wave"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Sine Wave"/>
+                        android:text="@string/source_sine_wave_text"/>
 
                     <RadioButton
                         android:id="@+id/radio_button_audio_source_white_noise"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="White Noise"/>
+                        android:text="@string/source_white_noise_text"/>
 
                     <RadioButton
                         android:id="@+id/radio_button_audio_source_silence"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Silence"/>
+                        android:text="@string/source_silence_text"/>
 
                     <RadioButton
                         android:id="@+id/radio_button_audio_source_sound"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Sound"
+                        android:text="@string/source_sound_text"
                         android:visibility="gone"/>
 
                 </RadioGroup>
@@ -208,14 +208,14 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="16dp"
                     android:orientation="vertical">
->
+
                     <TextView
                         android:id="@+id/text_duration_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
                         app:audioDuration="@{viewModel.duration}"
-                        android:text="Duration" />
+                        android:text="@string/source_duration_text" />
 
                     <SeekBar
                         android:id="@+id/slider_duration"
@@ -234,7 +234,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="24dp"
                         app:sineWaveFrequency="@{viewModel.frequency}"
-                        android:text="Frequency" />
+                        android:text="@string/source_frequency_text" />
 
                     <SeekBar
                         android:id="@+id/slider_frequency"

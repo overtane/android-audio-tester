@@ -2,7 +2,6 @@ package com.github.overtane.audiotester
 
 import android.app.Application
 import android.content.Context
-import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
 import com.github.overtane.audiotester.datastore.PreferencesRepository

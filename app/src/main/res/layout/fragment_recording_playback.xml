@@ -53,14 +53,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Recording time:" />
+                    android:text="@string/recording_time_title" />
 
                 <TextView
                     android:id="@+id/recording_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
                     android:text="@{viewModel.recordingTime}" />
 
             </TableRow>
@@ -75,14 +75,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Audio type:" />
+                    android:text="@string/audio_type_title" />
 
                 <TextView
                     android:id="@+id/recording_audio_type"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
                     android:text="@{viewModel.originalType}" />
 
             </TableRow>
@@ -97,14 +97,14 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:text="Sample rate:" />
+                    android:text="@string/sample_rate_title" />
 
                 <TextView
                     android:id="@+id/recording_sample_rate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
-                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
                     android:text="@{viewModel.sampleRate}" />
 
             </TableRow>

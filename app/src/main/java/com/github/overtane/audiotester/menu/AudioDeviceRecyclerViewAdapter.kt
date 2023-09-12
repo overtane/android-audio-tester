@@ -1,6 +1,5 @@
 package com.github.overtane.audiotester.menu
 
-import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.ViewGroup

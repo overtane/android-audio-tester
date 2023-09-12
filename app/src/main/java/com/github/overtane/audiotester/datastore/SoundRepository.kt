@@ -50,7 +50,7 @@ class SoundRepository(preferencesRepository: PreferencesRepository) {
     }
 
     private suspend fun doDecode(url: String) = runCatching {
-        sound.update { Pair(url, Decoder.decodeMp3(url)) }
+        sound.update { Pair(url, Mp3Decoder.decodeMp3(url)) }
         }.onFailure {
             decodeState.update { DecodeState.ERROR }
         }.onSuccess {

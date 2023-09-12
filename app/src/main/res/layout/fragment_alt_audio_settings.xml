@@ -26,7 +26,7 @@
                 android:layout_margin="16dp"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                android:text="Sample rate and channel count"
+                android:text="@string/alternate_settings_title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -51,13 +51,13 @@
                         android:id="@+id/radio_button_sample_rate_44_1khz"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="44.1 kHz" />
+                        android:text="@string/samplerate_44_1_khz_text" />
 
                     <RadioButton
                         android:id="@+id/radio_button_sample_rate_48khz"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="48 kHz" />
+                        android:text="@string/samplerate_48_khz_text" />
 
                 </RadioGroup>
 
@@ -73,13 +73,13 @@
                         android:id="@+id/radio_button_channel_count_mono"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Mono" />
+                        android:text="@string/channel_count_mono_text" />
 
                     <RadioButton
                         android:id="@+id/radio_button_channel_count_stereo"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="Stereo" />
+                        android:text="@string/channel_count_stereo_text" />
 
                 </RadioGroup>
 
@@ -105,7 +105,7 @@
                     android:id="@+id/radio_button_audio_source_sine_wave"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Sine Wave"
+                    android:text="@string/source_sine_wave_text"
                     android:layout_weight="1" />
 
                 <RadioButton
@@ -113,7 +113,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="White Noise"
+                    android:text="@string/source_white_noise_text"
                     android:layout_weight="1" />
 
                 <RadioButton
@@ -121,7 +121,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="Silence"
+                    android:text="@string/source_silence_text"
                     android:layout_weight="1"/>
 
             </RadioGroup>
@@ -133,7 +133,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginStart="8dp"
                 app:audioDuration="@{viewModel.duration}"
-                android:text="Duration" />
+                android:text="@string/source_duration_text" />
 
             <SeekBar
                 android:id="@+id/slider_duration"
@@ -153,7 +153,7 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginStart="8dp"
                 app:sineWaveFrequency="@{viewModel.frequency}"
-                android:text="Frequency" />
+                android:text="@string/source_frequency_text" />
 
             <SeekBar
                 android:id="@+id/slider_frequency"
