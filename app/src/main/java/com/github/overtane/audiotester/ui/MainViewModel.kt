@@ -65,8 +65,26 @@ class MainViewModel(
 
     private var player: MutableList<Player>
     private var recorder: Recorder? = null
-    var isRecording = MutableLiveData<Boolean>()
-    private var recorded: Date = Calendar.getInstance().time
+
+    private var _recorded: Date = Calendar.getInstance().time
+    val recorded
+        get() = _recorded
+
+    private var _isRecording = MutableLiveData<Boolean>()
+    val isRecording
+        get() = _isRecording
+    val isPlaying: Boolean
+        get() = isSomeonePlaying()
+
+
+    var buttonClick = MutableLiveData<Boolean>()
+    var buttonStates = mutableMapOf (
+        R.id.button_primary_audio_play_pause to false,
+        R.id.button_primary_audio_duck to false,
+        R.id.button_primary_audio_repeat to false,
+        R.id.button_secondary_audio_play_pause to false,
+        R.id.button_secondary_audio_duck to false,
+        R.id.button_secondary_audio_repeat to false)
 
     init {
         Log.d(TAG, "INIT VIEWMODEL")
@@ -77,7 +95,8 @@ class MainViewModel(
         val prefs = preferencesRepository.get()
         _liveStreams.value = prefs
         player = mutableListOf(Player(prefs[MAIN_AUDIO]), Player(prefs[ALT_AUDIO]))
-        isRecording.value = false
+        _isRecording.value = false
+        buttonClick.value = false
     }
 
     fun setMainAudio(audioStream: AudioStream) {
@@ -86,30 +105,11 @@ class MainViewModel(
         _playbackInfoMain.value = null // Clear streaming data
         _recordInfo.value = null
     }
-
-    fun onMainAudioClicked(view: View) {
-        val sound = liveStreams.value?.get(EXT_AUDIO)
-        if (!isPlaying()) {
-            liveStreams.value?.get(MAIN_AUDIO)?.let {
-                view.findNavController()
-                    .navigate(MainFragmentDirections.actionMainAudioSettings(it, sound))
-            }
-        }
-    }
-
+    
     fun setAltAudio(audioStream: AudioStream) {
         _liveStreams.value?.set(ALT_AUDIO, audioStream)
         preferencesRepository.set(liveStreams.value!!)
         _playbackInfoAlt.value = null // Clear streaming data
-    }
-
-    fun onAltAudioClicked(view: View) {
-        if (!isPlaying()) {
-            liveStreams.value?.get(ALT_AUDIO)?.let {
-                view.findNavController()
-                    .navigate(MainFragmentDirections.actionAltAudioSettings(it))
-            }
-        }
     }
 
     fun setSound(bundle: Bundle?) {
@@ -132,25 +132,17 @@ class MainViewModel(
     }
 
     fun onButtonClicked(view: View) {
-        view.isSelected = !view.isSelected
-        when (view.isSelected) {
+        when (flipButtonState(view)) {
             true -> onButtonSelected(view)
             false -> onButtonDeselected(view)
         }
     }
 
-    fun onMicButtonClicked(view: View): Boolean {
-        val stream = liveStreams.value?.get(MAIN_AUDIO)!!
-        val recording = recordInfo.value
-        Log.d(TAG, "Recording size ${recording?.recording?.size} bytes")
-        if (view.isSelected && !isPlaying() && recording != null) {
-            view.findNavController().navigate(
-                MainFragmentDirections.actionRecordingPlaybackFragment(stream, recording, recorded)
-            )
-            return true
-        }
-        if (!view.isSelected || isPlaying()) return true
-        return false
+    private fun flipButtonState(view: View) : Boolean {
+        val state = !buttonStates[view.id]!!
+        buttonStates[view.id] = state
+        buttonClick.value = !buttonClick.value!!
+        return state
     }
 
     private fun onButtonSelected(view: View) {
@@ -200,15 +192,14 @@ class MainViewModel(
                 (soundRepository.decodeState.value == SoundRepository.DecodeState.READY)
 
     private fun startRecord() {
-        recorded = Calendar.getInstance().time
         recorder = Recorder(liveStreams.value?.get(0)!!)
         Log.d(TAG, "$recorder")
         viewModelScope.async(Dispatchers.IO) { recorder?.record() }
-        isRecording.value = true
+        _isRecording.value = true
         viewModelScope.launch {
             recorder?.status()?.collect { _recordInfo.value = it }
             recorder?.stop()
-            isRecording.value = false
+            _isRecording.value = false
         }
     }
 
@@ -233,19 +224,18 @@ class MainViewModel(
     private fun stopPlayback(view: View, i: Int) {
         Log.d(TAG, "Stop Playback")
         player[i].stop()
-        view.isSelected = false
+        flipButtonState(view)
     }
 
     private fun stopRecord() {
         recorder?.stop()
         recorder = null
-        isRecording.value = false
+        _recorded = Calendar.getInstance().time
+        _isRecording.value = false
     }
 
-    private fun isPlaying() =
-        player[MAIN_AUDIO].isPlaying() || player[ALT_AUDIO].isPlaying() || isRecording()
-
-    private fun isRecording() = recorder?.isRecording() ?: false
+    private fun isSomeonePlaying() =
+        player[MAIN_AUDIO].isPlaying() || player[ALT_AUDIO].isPlaying() || _isRecording.value!!
 
     companion object {
         const val MAIN_AUDIO = 0

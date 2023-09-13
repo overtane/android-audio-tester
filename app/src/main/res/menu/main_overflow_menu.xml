@@ -4,9 +4,6 @@
         android:id="@+id/audioDeviceFragment"
         android:title="Audio Devices" />
     <item
-        android:id="@+id/instructionsFragment"
-        android:title="Instructions" />
-    <item
         android:id="@+id/soundBrowser"
         android:title="Sound Browser" />
     <item

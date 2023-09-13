@@ -73,11 +73,6 @@
         android:label="@string/fragment_audio_devices_list_label"
         tools:layout="@layout/fragment_audio_device_list" />
     <fragment
-        android:id="@+id/instructionsFragment"
-        android:name="com.github.overtane.audiotester.menu.InstructionsFragment"
-        android:label="@string/fragment_instructions_label"
-        tools:layout="@layout/fragment_instructions" />
-    <fragment
         android:id="@+id/aboutFragment"
         android:name="com.github.overtane.audiotester.menu.AboutFragment"
         android:label="@string/fragment_about_label"

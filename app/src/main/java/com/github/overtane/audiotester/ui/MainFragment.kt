@@ -4,8 +4,10 @@ import android.animation.ObjectAnimator
 import android.app.PendingIntent
 import android.content.ActivityNotFoundException
 import android.content.ComponentName
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.*
 import android.view.animation.Animation
 import android.widget.Toast
@@ -16,15 +18,18 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.setFragmentResultListener
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.github.overtane.audiotester.R
 import com.github.overtane.audiotester.SOUND_BROWSER_PACKAGE
 import com.github.overtane.audiotester.SOUND_REQUEST_CODE
 import com.github.overtane.audiotester.SOUND_REQUEST_KEY
+import com.github.overtane.audiotester.TAG
 import com.github.overtane.audiotester.audiostream.AudioStream
 import com.github.overtane.audiotester.databinding.FragmentMainBinding
 import com.github.overtane.audiotester.datastore.SoundRepository.DecodeState
+import kotlin.time.measureTime
 
 class MainFragment : Fragment(), MenuProvider {
 
@@ -46,8 +51,40 @@ class MainFragment : Fragment(), MenuProvider {
             viewModel = myViewModel
 
             buttonPrimaryAudioRecording.setOnClickListener {
-                if (!myViewModel.onMicButtonClicked(it)) {
+                val hasRecording =
+                    it.isSelected && !myViewModel.isPlaying && myViewModel.recordInfo.value != null
+                if (!hasRecording) {
                     Toast.makeText(context, "No recording", Toast.LENGTH_SHORT).show()
+                } else {
+                    findNavController().navigate(
+                        MainFragmentDirections.actionRecordingPlaybackFragment(
+                            myViewModel.liveStreams.value?.get(MainViewModel.MAIN_AUDIO)!!,
+                            myViewModel.recordInfo.value!!,
+                            myViewModel.recorded
+                        )
+                    )
+                }
+            }
+
+            primaryData.setOnClickListener {
+                val sound =
+                    myViewModel.liveStreams.value?.get(MainViewModel.EXT_AUDIO)
+                if (!myViewModel.isPlaying) {
+                    myViewModel.liveStreams.value?.get(MainViewModel.MAIN_AUDIO)?.let {
+                        findNavController().navigate(
+                            MainFragmentDirections.actionMainAudioSettings(it, sound)
+                        )
+                    }
+                }
+            }
+
+            secondaryData.setOnClickListener {
+                if (!myViewModel.isPlaying) {
+                    myViewModel.liveStreams.value?.get(MainViewModel.ALT_AUDIO)?.let {
+                        findNavController().navigate(
+                            MainFragmentDirections.actionAltAudioSettings(it)
+                        )
+                    }
                 }
             }
         }
@@ -71,14 +108,31 @@ class MainFragment : Fragment(), MenuProvider {
                     false -> stopMicAnimation()
                 }
             }
+            buttonClick.observe(viewLifecycleOwner) {
+                binding.buttonPrimaryAudioPlayPause.isSelected =
+                    buttonStates[R.id.button_primary_audio_play_pause]!!
+                binding.buttonPrimaryAudioDuck.isSelected =
+                    buttonStates[R.id.button_primary_audio_duck]!!
+                binding.buttonPrimaryAudioRepeat.isSelected =
+                    buttonStates[R.id.button_primary_audio_repeat]!!
+                binding.buttonSecondaryAudioPlayPause.isSelected =
+                    buttonStates[R.id.button_secondary_audio_play_pause]!!
+                binding.buttonSecondaryAudioDuck.isSelected =
+                    buttonStates[R.id.button_secondary_audio_duck]!!
+                binding.buttonSecondaryAudioRepeat.isSelected =
+                    buttonStates[R.id.button_secondary_audio_repeat]!!
+            }
             decodeState.observe(viewLifecycleOwner) { state ->
                 when (state) {
                     DecodeState.DECODING ->
                         Toast.makeText(context, "Decoding sound", Toast.LENGTH_SHORT).show()
+
                     DecodeState.DECODED ->
                         Toast.makeText(context, "Sound ready", Toast.LENGTH_SHORT).show()
+
                     DecodeState.ERROR ->
                         Toast.makeText(context, "Sound unavailable", Toast.LENGTH_SHORT).show()
+
                     else -> Unit
                 }
             }

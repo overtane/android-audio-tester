@@ -10,7 +10,14 @@
             type="com.github.overtane.audiotester.settings.SettingsViewModel" />
     </data>
 
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/main_settings_motion"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layoutDescription="@xml/motionscene_main_settings">
+
     <ScrollView
+        android:id="@+id/main_settings_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -22,8 +29,8 @@
                 android:id="@+id/audio_type_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:textSize="16sp"
+                android:layout_margin="@dimen/margin_normal"
+                android:textSize="@dimen/text_size_subtitle"
                 android:textStyle="bold"
                 android:text="@string/main_settings_title"
                 app:layout_constraintStart_toStartOf="parent"
@@ -33,7 +40,7 @@
                 android:id="@+id/layout_audio_format"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_margin="@dimen/margin_normal"
                 android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/audio_type_title">
@@ -81,7 +88,7 @@
                     android:id="@+id/radio_group_sample_rate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="@dimen/margin_normal"
                     android:layout_weight="1"
                     android:onCheckedChanged="@{(view, id) -> viewModel.onAudioFormatChanged(view, id)}">
 
@@ -151,8 +158,8 @@
                 android:id="@+id/audio_source_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
-                android:textSize="16sp"
+                android:layout_margin="@dimen/margin_normal"
+                android:textSize="@dimen/text_size_subtitle"
                 android:textStyle="bold"
                 android:text="@string/audio_source_title"
                 app:layout_constraintStart_toStartOf="parent"
@@ -163,7 +170,7 @@
                 android:id="@+id/layout_audio_source"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="16dp"
+                android:layout_margin="@dimen/margin_normal"
                 android:orientation="horizontal"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/audio_source_title">
@@ -206,14 +213,14 @@
                     android:id="@+id/layout_audio_extras"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
+                    android:layout_margin="@dimen/margin_normal"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/text_duration_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/margin_small"
                         app:audioDuration="@{viewModel.duration}"
                         android:text="@string/source_duration_text" />
 
@@ -221,7 +228,7 @@
                         android:id="@+id/slider_duration"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/margin_small"
                         android:min="@integer/audio_duration_min"
                         android:max="@integer/audio_duration_max"
                         android:onProgressChanged="@{(view, progress, fromUser) -> viewModel.onProgressChanged(view, progress, fromUser)}"
@@ -232,7 +239,7 @@
                         android:id="@+id/text_frequency_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginTop="@dimen/margin_large"
                         app:sineWaveFrequency="@{viewModel.frequency}"
                         android:text="@string/source_frequency_text" />
 
@@ -240,7 +247,7 @@
                         android:id="@+id/slider_frequency"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
+                        android:layout_marginTop="@dimen/margin_small"
                         android:min="@integer/sine_freq_min"
                         android:max="@integer/sine_freq_max"
                         android:onProgressChanged="@{(view, progress, fromUser) -> viewModel.onProgressChanged(view, progress, fromUser)}"
@@ -250,7 +257,7 @@
                         android:id="@+id/text_url_value"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="24dp"
+                        android:layout_marginTop="@dimen/margin_large"
                         android:linksClickable="true"
                         android:singleLine="true"
                         android:textStyle="bold"
@@ -265,7 +272,7 @@
                 android:id="@+id/ok_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
+                android:layout_marginTop="@dimen/margin_normal"
                 android:text="@string/save_button_text"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -274,4 +281,5 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 </layout>

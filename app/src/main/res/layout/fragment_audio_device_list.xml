@@ -6,8 +6,8 @@
     android:name="com.github.overtane.audiotester.devices.AudioDeviceFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_marginLeft="16dp"
-    android:layout_marginRight="16dp"
+    android:layout_marginLeft="@dimen/margin_normal"
+    android:layout_marginRight="@dimen/margin_normal"
     app:layoutManager="LinearLayoutManager"
     tools:context=".menu.AudioDeviceListFragment"
     tools:listitem="@layout/audio_device_item" />

@@ -1,6 +1,7 @@
 package com.github.overtane.audiotester
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -12,10 +13,11 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
+import com.github.overtane.audiotester.ui.MainFragment
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var navController: NavController
+    private val navController: NavController by lazy { findNavController(R.id.nav_host_fragment) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,14 +34,13 @@ class MainActivity : AppCompatActivity() {
             )
         }
 
-        navController = findNavController(R.id.nav_host_fragment).apply {
-            val sound: Bundle? = intent?.extras?.getParcelable(SOUND_REPLY_KEY)
-            sound?.let {
-                setGraph(R.navigation.nav_graph, bundleOf("sound" to it))
-                intent?.replaceExtras(null)
-            }
-            setupActionBarWithNavController(this, AppBarConfiguration(this.graph))
-        }
+        setMainFragmentArgs(intent)
+        setupActionBarWithNavController(navController, AppBarConfiguration(navController.graph))
+    }
+
+    override fun onNewIntent(intent: Intent?) {
+        super.onNewIntent(intent)
+        setMainFragmentArgs(intent)
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -58,6 +59,14 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Log.e(TAG, "Record audio permission denied.")
             }
+        }
+    }
+
+    private fun setMainFragmentArgs(intent: Intent?) {
+        val sound: Bundle? = intent?.extras?.getParcelable(SOUND_REPLY_KEY)
+        sound?.let {
+            navController.setGraph(R.navigation.nav_graph, bundleOf("sound" to it))
+            intent?.replaceExtras(null)
         }
     }
 

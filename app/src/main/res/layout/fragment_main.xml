@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".ui.main.MainFragment">
@@ -11,327 +10,322 @@
             type="com.github.overtane.audiotester.ui.MainViewModel" />
     </data>
 
-    <ScrollView
+    <androidx.constraintlayout.motion.widget.MotionLayout
+        android:id="@+id/main_motion"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layoutDescription="@xml/motionscene_main">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/main_layout"
+    <ScrollView
+        android:id="@+id/main_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/primary_audio"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/divider_primary_secondary">
+            android:layout_height="0dp"
+            android:layout_margin="@dimen/margin_normal" >
 
-                <LinearLayout
-                    android:id="@+id/primary_data"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:clickable="true"
-                    android:onClick="@{(view) -> viewModel.onMainAudioClicked(view)}"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
-
-                    <TextView
-                        android:id="@+id/primary_audio_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/primary_audio_title"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/primary_audio_source_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/audio_source_title"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/primary_audio_format"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.liveStreams[0].toString()}"  />
-
-                    <TextView
-                        android:id="@+id/primary_audio_source"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.liveStreams[0].source.toString()}"  />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/primary_buttons"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/primary_data">
-
-                    <ImageButton
-                        android:id="@+id/button_primary_audio_play_pause"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/selector_button_background_color"
-                        android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
-                        android:contentDescription="@string/play_button_content_descr"
-                        app:srcCompat="@drawable/selector_ic_vector_play"
-                        app:tint="@color/selector_button_foreground_color"/>
-
-                    <ImageButton
-                        android:id="@+id/button_primary_audio_duck"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/selector_button_background_color"
-                        android:textColor="@color/selector_button_foreground_color"
-                        android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
-                        android:contentDescription="@string/duck_button_content_descr"
-                        app:srcCompat="@drawable/ic_vector_duck"
-                        app:tint="@color/selector_button_foreground_color" />
-
-                    <ImageButton
-                        android:id="@+id/button_primary_audio_repeat"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/selector_button_background_color"
-                        android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
-                        app:srcCompat="@drawable/ic_vector_repeat"
-                        app:tint="@color/selector_button_foreground_color"
-                        android:contentDescription="@string/repeat_button_content_descr" />
-
-                    <ImageButton
-                        android:id="@+id/button_primary_audio_recording"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="8dp"
-                        android:layout_weight="1"
-                        android:clickable="false"
-                        android:enabled="false"
-                        android:backgroundTint="?attr/colorOnPrimary"
-                        app:microphoneState="@{viewModel.liveStreams[0]}"
-                        app:srcCompat="@drawable/selector_ic_vector_mic"
-                        app:tint="?attr/colorPrimary"
-                        android:contentDescription="@string/microphone_icon_content_descr" />
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/primary_stream_info"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/primary_buttons">
-
-                    <TextView
-                        android:id="@+id/primary_playback_info_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@{viewModel.playbackInfoMain.toString()}" />
-
-                    <ImageView
-                        android:id="@+id/primary_stream_info_error"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="5"
-                        android:visibility="invisible"
-                        app:srcCompat="@drawable/ic_vector_error"
-                        app:tint="?attr/colorError"
-                        android:contentDescription="@string/error_icon_content_descr" />
-
-                </LinearLayout>
+            <LinearLayout
+                android:id="@+id/primary_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@+id/primary_buttons"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="spread">
 
                 <TextView
-                    android:id="@+id/primary_record_info_text"
+                    android:id="@+id/primary_audio_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/primary_audio_title"
+                    android:textSize="@dimen/text_size_title"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/primary_audio_source_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/audio_source_title"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/primary_audio_format"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.liveStreams[0].toString()}" />
+
+                <TextView
+                    android:id="@+id/primary_audio_source"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.liveStreams[0].source.toString()}" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/primary_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@+id/primary_stream_info"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/primary_data"
+                app:layout_constraintVertical_chainStyle="spread">
+
+                <ImageButton
+                    android:id="@+id/button_primary_audio_play_pause"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="@{viewModel.recordInfo.toString()}"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/primary_stream_info"/>
+                    android:layout_margin="@dimen/margin_small"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/selector_button_background_color"
+                    android:contentDescription="@string/play_button_content_descr"
+                    android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
+                    app:srcCompat="@drawable/selector_ic_vector_play"
+                    app:tint="@color/selector_button_foreground_color" />
+
+                <ImageButton
+                    android:id="@+id/button_primary_audio_duck"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/margin_small"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/selector_button_background_color"
+                    android:contentDescription="@string/duck_button_content_descr"
+                    android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
+                    android:textColor="@color/selector_button_foreground_color"
+                    app:srcCompat="@drawable/ic_vector_duck"
+                    app:tint="@color/selector_button_foreground_color" />
+
+                <ImageButton
+                    android:id="@+id/button_primary_audio_repeat"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/margin_small"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/selector_button_background_color"
+                    android:contentDescription="@string/repeat_button_content_descr"
+                    android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
+                    app:srcCompat="@drawable/ic_vector_repeat"
+                    app:tint="@color/selector_button_foreground_color" />
+
+                <ImageButton
+                    android:id="@+id/button_primary_audio_recording"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/margin_small"
+                    android:layout_weight="1"
+                    android:backgroundTint="?attr/colorOnPrimary"
+                    android:clickable="false"
+                    android:contentDescription="@string/microphone_icon_content_descr"
+                    android:enabled="false"
+                    app:microphoneState="@{viewModel.liveStreams[0]}"
+                    app:srcCompat="@drawable/selector_ic_vector_mic"
+                    app:tint="?attr/colorPrimary" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/primary_stream_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@+id/primary_record_info_text"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/primary_buttons"
+                app:layout_constraintVertical_chainStyle="spread" >
+
+                <TextView
+                    android:id="@+id/primary_playback_info_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@{viewModel.playbackInfoMain.toString()}" />
+
+                <ImageView
+                    android:id="@+id/primary_stream_info_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:contentDescription="@string/error_icon_content_descr"
+                    android:visibility="invisible"
+                    app:srcCompat="@drawable/ic_vector_error"
+                    app:tint="?attr/colorError" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/primary_record_info_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.recordInfo.toString()}"
+                app:layout_constraintBottom_toTopOf="@+id/primary_audio_progress_bar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/primary_stream_info"
+                app:layout_constraintVertical_chainStyle="spread" />
 
             <ProgressBar
-                    android:id="@+id/primary_audio_progress_bar"
-                    style="?android:attr/progressBarStyleHorizontal"
+                android:id="@+id/primary_audio_progress_bar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/margin_large"
+                app:layout_constraintBottom_toTopOf="@+id/secondary_data"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/primary_record_info_text"
+                app:progressPercentage="@{viewModel.playbackInfoMain}"
+                app:layout_constraintVertical_chainStyle="spread" />
+
+            <LinearLayout
+                android:id="@+id/secondary_data"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clickable="true"
+                android:orientation="vertical"
+                app:layout_constraintBottom_toTopOf="@+id/secondary_buttons"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/primary_audio_progress_bar"
+                app:layout_constraintVertical_chainStyle="spread">
+
+                <TextView
+                    android:id="@+id/secondary_audio_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    app:progressPercentage="@{viewModel.playbackInfoMain}"
+                    android:text="@string/secondary_audio_title"
+                    android:textSize="@dimen/text_size_title"
+                    android:textStyle="bold"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/primary_record_info_text" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <View
-            android:id="@+id/divider_primary_secondary"
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="?android:attr/listDivider"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/secondary_audio" />
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/secondary_audio"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent">
-
-                <LinearLayout
-                    android:id="@+id/secondary_data"
+                <TextView
+                    android:id="@+id/secondary_audio_source_title"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:clickable="true"
-                    android:onClick="@{(view) -> viewModel.onAltAudioClicked(view)}"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent">
+                    android:text="@string/audio_source_title"
+                    android:textStyle="bold" />
 
-                    <TextView
-                        android:id="@+id/secondary_audio_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/secondary_audio_title"
-                        android:textSize="24sp"
-                        android:textStyle="bold"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                <TextView
+                    android:id="@+id/secondary_audio_format"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.liveStreams[1].toString()}" />
 
-                    <TextView
-                        android:id="@+id/secondary_audio_source_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@string/audio_source_title"
-                        android:textStyle="bold" />
+                <TextView
+                    android:id="@+id/secondary_audio_source"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@{viewModel.liveStreams[1].source.toString()}" />
 
-                    <TextView
-                        android:id="@+id/secondary_audio_format"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.liveStreams[1].toString()}"  />
+            </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/secondary_audio_source"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="@{viewModel.liveStreams[1].source.toString()}"  />
+            <LinearLayout
+                android:id="@+id/secondary_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@+id/secondary_stream_info"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/secondary_data"
+                app:layout_constraintVertical_chainStyle="spread" >
 
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/secondary_buttons"
+                <ImageButton
+                    android:id="@+id/button_secondary_audio_play_pause"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:orientation="horizontal"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/secondary_data" >
+                    android:layout_margin="@dimen/margin_small"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/selector_button_background_color"
+                    android:contentDescription="@string/play_button_content_descr"
+                    android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
+                    app:srcCompat="@drawable/selector_ic_vector_play"
+                    app:tint="@color/selector_button_foreground_color" />
 
-
-                    <ImageButton
-                        android:id="@+id/button_secondary_audio_play_pause"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/selector_button_background_color"
-                        android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
-                        app:srcCompat="@drawable/selector_ic_vector_play"
-                        app:tint="@color/selector_button_foreground_color"
-                        android:contentDescription="@string/play_button_content_descr" />
-
-                    <ImageButton
-                        android:id="@+id/button_secondary_audio_duck"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/selector_button_background_color"
-                        android:textColor="@color/selector_button_foreground_color"
-                        android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
-                        app:srcCompat="@drawable/ic_vector_duck"
-                        app:tint="@color/selector_button_foreground_color"
-                        android:contentDescription="@string/duck_button_content_descr" />
-
-                    <ImageButton
-                        android:id="@+id/button_secondary_audio_repeat"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="8dp"
-                        android:layout_weight="1"
-                        android:backgroundTint="@color/selector_button_background_color"
-                        android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
-                        app:srcCompat="@drawable/ic_vector_repeat"
-                        app:tint="@color/selector_button_foreground_color"
-                        android:contentDescription="@string/repeat_button_content_descr" />
-
-                    <Button
-                        android:id="@+id/button_secondary_fill"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_margin="8dp"
-                        android:layout_weight="1"
-                        android:visibility="invisible"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/secondary_stream_info"
+                <ImageButton
+                    android:id="@+id/button_secondary_audio_duck"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/secondary_buttons">
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/margin_small"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/selector_button_background_color"
+                    android:contentDescription="@string/duck_button_content_descr"
+                    android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
+                    android:textColor="@color/selector_button_foreground_color"
+                    app:srcCompat="@drawable/ic_vector_duck"
+                    app:tint="@color/selector_button_foreground_color" />
 
-                    <TextView
-                        android:id="@+id/secondary_stream_info_text"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="1"
-                        android:text="@{viewModel.playbackInfoAlt.toString()}" />
+                <ImageButton
+                    android:id="@+id/button_secondary_audio_repeat"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/margin_small"
+                    android:layout_weight="1"
+                    android:backgroundTint="@color/selector_button_background_color"
+                    android:contentDescription="@string/repeat_button_content_descr"
+                    android:onClick="@{(view) -> viewModel.onButtonClicked(view)}"
+                    app:srcCompat="@drawable/ic_vector_repeat"
+                    app:tint="@color/selector_button_foreground_color" />
 
-                    <ImageView
-                        android:id="@+id/secondary_stream_info_error"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:layout_weight="5"
-                        android:visibility="invisible"
-                        app:srcCompat="@drawable/ic_vector_error"
-                        app:tint="?attr/colorError"
-                        android:contentDescription="@string/error_icon_content_descr" />
-                </LinearLayout>
+                <Button
+                    android:id="@+id/button_secondary_fill"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_margin="@dimen/margin_small"
+                    android:layout_weight="1"
+                    android:visibility="invisible" />
 
-                <ProgressBar
-                        android:id="@+id/secondary_audio_progress_bar"
-                        style="?android:attr/progressBarStyleHorizontal"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        app:progressPercentage="@{viewModel.playbackInfoAlt}"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@id/secondary_stream_info" />
+            </LinearLayout>
 
-            </androidx.constraintlayout.widget.ConstraintLayout>
+            <LinearLayout
+                android:id="@+id/secondary_stream_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintBottom_toTopOf="@id/secondary_audio_progress_bar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/secondary_buttons"
+                app:layout_constraintVertical_chainStyle="spread" >
+
+                <TextView
+                    android:id="@+id/secondary_stream_info_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:text="@{viewModel.playbackInfoAlt.toString()}" />
+
+                <ImageView
+                    android:id="@+id/secondary_stream_info_error"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:contentDescription="@string/error_icon_content_descr"
+                    android:visibility="invisible"
+                    app:srcCompat="@drawable/ic_vector_error"
+                    app:tint="?attr/colorError" />
+
+            </LinearLayout>
+
+            <ProgressBar
+                android:id="@+id/secondary_audio_progress_bar"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_small"
+                android:layout_marginBottom="@dimen/margin_normal"
+                app:layout_constraintTop_toBottomOf="@+id/secondary_stream_info"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintVertical_chainStyle="spread"
+                app:progressPercentage="@{viewModel.playbackInfoAlt}" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
+
+    </androidx.constraintlayout.motion.widget.MotionLayout>
 
 </layout>

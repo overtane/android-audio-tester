@@ -21,7 +21,6 @@ class SettingsViewModel(initialStream: AudioStream, val sound: AudioStream?) :
         NOTHING
     }
 
-
     private var _audioStream = MutableLiveData<AudioStream>()
     val audioStream
         get() = _audioStream
