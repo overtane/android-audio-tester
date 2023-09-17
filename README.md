@@ -12,6 +12,10 @@ Download the source code and use Android Studio for building.
 
 [Instructions](docs/instructions.md)
 
+## SoundBrowser Companion App
+
+Clone [SoundBrowser](https://github.com/overtane/sound-browser/tree/main) repository and import it to Android Studio. Note that [you need an API key](https://github.com/overtane/sound-browser/blob/main/README.md) for accessing freesound database.
+
 ## License and copyrights
 
 MIT [LICENSE](LICENSE)

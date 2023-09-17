@@ -33,7 +33,7 @@ Application has two main parts:
 <img src="images/main-audio-settings.png" width="240"/>
 </p>
 
-*The Companion App*: With the companion app, *Sound Browser*, the user of the main app can select and download audio clips from sound database. Selected clips can be played in the main app.
+*The Companion App*: With the companion app, [*Sound Browser*](https://github.com/overtane/sound-browser/blob/main/README.md), the user of the main app can select and download audio clips from sound database. Selected clips can be played in the main app.
 
 <p align="center">
 <img src="images/sound-browser-search-results.png" width="240"/>
