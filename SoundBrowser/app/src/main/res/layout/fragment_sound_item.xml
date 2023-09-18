@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="sound"
+            type="org.github.overtane.soundbrowser.main.SoundListItem"/>
+        <variable
+            name="clickListener"
+            type="org.github.overtane.soundbrowser.main.SoundItemClickListener"/>
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:onClick="@{() -> clickListener.onClick(sound.id)}">
+
+        <TextView
+            android:id="@+id/item_number"
+            android:layout_width="48dp"
+            android:layout_height="match_parent"
+            android:layout_margin="8dp"
+            android:textAppearance="?attr/textAppearanceListItem"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/item_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:text="@{sound.name}"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:ellipsize="middle"
+            android:maxLines="1"
+            app:layout_constraintStart_toEndOf="@+id/item_number"
+            app:layout_constraintEnd_toStartOf="@+id/item_image"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/item_properties"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:text="@{sound.samplerate + sound.duration}"
+            android:textAppearance="?attr/textAppearanceListItem"
+            android:ellipsize="end"
+            android:maxLines="1"
+            app:layout_constraintStart_toStartOf="@+id/item_name"
+            app:layout_constraintEnd_toStartOf="@+id/item_image"
+            app:layout_constraintTop_toBottomOf="@+id/item_name" />
+
+        <ImageView
+            android:id="@+id/item_image"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:contentDescription="@string/sound_waveform_text"
+            app:layout_constraintDimensionRatio="2:1"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:imageUrl="@{sound.imageUrl}" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

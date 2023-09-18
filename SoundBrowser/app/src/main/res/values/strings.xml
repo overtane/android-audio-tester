@@ -1,0 +1,36 @@
+<resources>
+    <string name="app_name">SoundBrowser</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_search">Search</string>
+    <string name="play">Play</string>
+    <string name="pause">Pause</string>
+    <string name="loading">Loading</string>
+    <string name="about">About</string>
+    <string name="sound_waveform_text">Sound waveform</string>
+    <string name="hello_about_fragment">
+        <![CDATA[SoundBrowser is a simple app for searching, browsing and playing sounds from
+        https://freesound.org.\n\n
+
+        All sound clips are covered by Creative Commons 0
+        (https://creativecommons.org/publicdomain/zero/1.0)
+        license, and are shorter than 60 seconds of duration. To find longer clips or sounds
+        under some other license, go to freesound web site.\n\n
+
+        The clip played is always a mp3 preview, not the original sound. In order to download
+            the original sound, navigate to the sound\'s homepage from sound details.\n\n
+
+        Copyright © Olli Vertanen, 2023]]>
+
+    </string>
+    <string name="sound_details">Sound Details</string>
+    <string name="close_dialog">close dialog</string>
+    <string name="sample_rate">Sample rate</string>
+    <string name="duration">Duration</string>
+    <string name="channels">Channels</string>
+    <string name="bit_depth">Bit depth</string>
+    <string name="license">License</string>
+    <string name="uploader">Uploader</string>
+    <string name="creative_commons_0">Creative Commons 0</string>
+    <string name="use_sound">Use Sound</string>
+    <string name="no_internet">no internet</string>
+</resources>

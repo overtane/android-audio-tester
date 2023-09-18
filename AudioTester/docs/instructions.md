@@ -53,7 +53,7 @@ You can play back the latest recording when tapping the mic icon after the strea
 
 ## Using sound browser
 
-- Build and install [sound browser](https://github.com/overtane/sound-browser). You need to [register](https://freesound.org/home/register/) to freesound to get an API key.
+- Build and install [sound browser](https://github.com/overtane/android-audio-tester/tree/main/SoundBrowser). You need to [register](https://freesound.org/home/register/) to freesound to get an API key.
 - Selecting 'Sound Browser' from the overflow menu takes you to the app.
 - Search the sound using free text search.
 

@@ -6,14 +6,11 @@ This is initial proof-of-concept using AudioTrack and AudioRecord. The final goa
 
 ## Build
 
-Download the source code and use Android Studio for building. There are two projects
-- The main app [AudioTester](AudioTester/README.md)
-- The companion app [SoundBrowser](SoundBrowser/README.md)
+Download the source code and use Android Studio for building. 
 
 ## Documentation
 
-- [Instructions](AudioTester/docs/instructions.md)
-- [Design document](AudioTester/docs/design.md)
+[Instructions](docs/instructions.md)
 
 ## License and copyrights
 

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/soundFragment">
+
+    <fragment
+        android:id="@+id/soundFragment"
+        android:name="org.github.overtane.soundbrowser.main.SoundFragment"
+        android:label="Sound Browser"
+        tools:layout="@layout/fragment_sound_list" />
+
+    <fragment
+        android:id="@+id/aboutFragment"
+        android:name="org.github.overtane.soundbrowser.about.AboutFragment"
+        android:label="@string/about"
+        tools:layout="@layout/fragment_about" />
+</navigation>
