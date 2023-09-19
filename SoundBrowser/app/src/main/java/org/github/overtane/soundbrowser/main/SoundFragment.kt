@@ -32,14 +32,16 @@ import org.github.overtane.soundbrowser.R
 class SoundFragment : Fragment(), MenuProvider {
 
     private lateinit var myViewModel: SoundViewModel
-    private val binding: FragmentSoundListBinding by lazy { setupViewBinding() }
-    private val adapter: SoundPagingDataAdapter by lazy { setupPagingDataAdapter() }
+    private lateinit var binding: FragmentSoundListBinding
+    private lateinit var adapter: SoundPagingDataAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         myViewModel = SoundViewModel()
+        binding = FragmentSoundListBinding.inflate(layoutInflater)
+        adapter = setupPagingDataAdapter()
 
         viewLifecycleOwner.lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -48,6 +50,7 @@ class SoundFragment : Fragment(), MenuProvider {
             }
         }
 
+        setupViewBinding()
         setupMenu()
         return binding.root
     }
@@ -66,38 +69,37 @@ class SoundFragment : Fragment(), MenuProvider {
             }
         }
 
-    private fun setupViewBinding() = FragmentSoundListBinding.inflate(layoutInflater)
-        .apply {
-            lifecycleOwner = viewLifecycleOwner
-            viewModel = myViewModel
+    private fun setupViewBinding() = binding.apply {
+        lifecycleOwner = viewLifecycleOwner
+        viewModel = myViewModel
 
-            soundList.adapter =
-                adapter.withLoadStateFooter(SoundLoadStateAdapter())
+        soundList.adapter =
+            adapter.withLoadStateFooter(SoundLoadStateAdapter())
 
-            soundList.addItemDecoration(
-                DividerItemDecoration(
-                    context,
-                    LinearLayoutManager.VERTICAL
-                )
+        soundList.addItemDecoration(
+            DividerItemDecoration(
+                context,
+                LinearLayoutManager.VERTICAL
             )
+        )
 
-            searchView.apply {
-                setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-                    override fun onQueryTextChange(newText: String?) = false
+        searchView.apply {
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextChange(newText: String?) = false
 
-                    override fun onQueryTextSubmit(query: String?): Boolean {
-                        query?.let {
-                            SoundRepository.query.update { query }
-                            adapter.refresh()
-                            searchView.clearFocus()
-                        }
-                        return true
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    query?.let {
+                        SoundRepository.query.update { query }
+                        adapter.refresh()
+                        searchView.clearFocus()
                     }
-                })
-                imeOptions = EditorInfo.IME_ACTION_SEARCH
-                inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_NORMAL
-            }
+                    return true
+                }
+            })
+            imeOptions = EditorInfo.IME_ACTION_SEARCH
+            inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_NORMAL
         }
+    }
 
     private fun setupMenu() = (requireActivity() as MenuHost).addMenuProvider(
         this,
